@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"git status --short --untracked-files=all 2>&1 | grep -E \\\"Mobile|Test\\\" | head -5 && echo \\\"===check-ignore===\\\" && git check-ignore -v EgovMobileId/src/test/java/egovframework/com/mip/mva...",
+  "error": "Exit code 1\n?? EgovAuthor/src/test/java/egovframework/com/sec/ram/service/impl/EgovAuthorInfoServiceImplTest.java\n?? EgovAuthor/src/test/java/egovframework/com/sec/rmt/util/EgovRoleInfoUtilityTest.java\n?? EgovMobileId/src/test/java/egovframework/com/mip/mva/sp/comm/enums/MipErrorEnumTest.java\n?? EgovMobileId/src/test/java/egovframework/com/mip/mva/sp/comm/util/Base64UtilTest.java\n?? EgovSearch/src/test/java/egovframework/com/ext/ops/service/EgovBbsSearchServiceImplTest.java\n===check-ignore===",
+  "timestamp": "2026-05-20T22:30:26.351Z",
+  "retry_count": 2
+}
