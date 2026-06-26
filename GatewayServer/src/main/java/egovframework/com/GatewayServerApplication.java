@@ -19,7 +19,7 @@ public class GatewayServerApplication {
 
 	@Bean
 	@LoadBalanced
-	public WebClient.Builder webClientBuilder() {
+	WebClient.Builder webClientBuilder() {
 		return WebClient.builder();
 	}
 

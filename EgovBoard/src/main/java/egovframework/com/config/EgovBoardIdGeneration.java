@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 public class EgovBoardIdGeneration {
 
     @Bean(name="bbsMstrStrategy")
-    public EgovIdGnrStrategyImpl bbsMstrStrategy() {
+    EgovIdGnrStrategyImpl bbsMstrStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("BBSMSTR_");
         egovIdGnrStrategyImpl.setCipers(12);
@@ -21,7 +21,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="egovBBSMstrIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovBBSMstrIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovBBSMstrIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(bbsMstrStrategy());
@@ -32,7 +32,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="blogIdStrategy")
-    public EgovIdGnrStrategyImpl blogIdStrategy() {
+    EgovIdGnrStrategyImpl blogIdStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("BLOG_");
         egovIdGnrStrategyImpl.setCipers(15);
@@ -41,7 +41,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="egovBlogIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovBlogIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovBlogIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(blogIdStrategy());
@@ -52,7 +52,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="cmmntyStrategy")
-    public EgovIdGnrStrategyImpl cmmntyStrategy() {
+    EgovIdGnrStrategyImpl cmmntyStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("CMMNTY_");
         egovIdGnrStrategyImpl.setCipers(13);
@@ -61,7 +61,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="egovCmmntyIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovCmmntyIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovCmmntyIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(cmmntyStrategy());
@@ -72,14 +72,14 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name = "nttIdStrategy")
-    public EgovIdGnrStrategyImpl nttIdStrategy() {
+    EgovIdGnrStrategyImpl nttIdStrategy() {
         EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
         strategy.setCipers(20);
         return strategy;
     }
 
     @Bean(name="egovBoardIdGnrService")
-    public EgovTableIdGnrServiceImpl egovNttIdGnrService(DataSource dataSource){
+    EgovTableIdGnrServiceImpl egovNttIdGnrService(DataSource dataSource){
         EgovTableIdGnrServiceImpl idGnrService = new EgovTableIdGnrServiceImpl();
         idGnrService.setDataSource(dataSource);
         idGnrService.setStrategy(nttIdStrategy());
@@ -90,7 +90,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean
-    public EgovIdGnrStrategyImpl fileStrategy(){
+    EgovIdGnrStrategyImpl fileStrategy(){
         EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
         strategy.setPrefix("FILE_");
         strategy.setCipers(15);
@@ -99,7 +99,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name = "egovFileIdGnrService")
-    public EgovTableIdGnrServiceImpl egovFileIdGnrService(DataSource dataSource){
+    EgovTableIdGnrServiceImpl egovFileIdGnrService(DataSource dataSource){
         EgovTableIdGnrServiceImpl egovTableIdGnrService = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrService.setDataSource(dataSource);
         egovTableIdGnrService.setStrategy(fileStrategy());
@@ -110,7 +110,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name = "bbsSyncLogStrategy")
-    public EgovIdGnrStrategyImpl bbsSyncLogStrategy() {
+    EgovIdGnrStrategyImpl bbsSyncLogStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("SYNC_");
         egovIdGnrStrategyImpl.setCipers(15);
@@ -119,7 +119,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name = "egovBbsSyncLogIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovBbsSyncLogIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovBbsSyncLogIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(bbsSyncLogStrategy());
@@ -130,14 +130,14 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean
-    public EgovIdGnrStrategyImpl answerNoStrategy(){
+    EgovIdGnrStrategyImpl answerNoStrategy(){
         EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
         strategy.setCipers(20);
         return strategy;
     }
 
     @Bean(name = "egovAnswerNoGnrService")
-    public EgovTableIdGnrServiceImpl egovAnswerNoGnrService(@Qualifier("answerNoStrategy")EgovIdGnrStrategyImpl answerNoStrategy, DataSource dataSource){
+    EgovTableIdGnrServiceImpl egovAnswerNoGnrService(@Qualifier("answerNoStrategy")EgovIdGnrStrategyImpl answerNoStrategy, DataSource dataSource){
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(answerNoStrategy);
@@ -148,14 +148,14 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean
-    public EgovIdGnrStrategyImpl stsfdgNoStrategy(){
+    EgovIdGnrStrategyImpl stsfdgNoStrategy(){
         EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
         strategy.setCipers(20);
         return strategy;
     }
 
     @Bean(name = "egovStsfdgNoGnrService")
-    public EgovTableIdGnrServiceImpl egovStsfdgNoGnrService(@Qualifier("stsfdgNoStrategy")EgovIdGnrStrategyImpl stsfdgNoStrategy, DataSource dataSource){
+    EgovTableIdGnrServiceImpl egovStsfdgNoGnrService(@Qualifier("stsfdgNoStrategy")EgovIdGnrStrategyImpl stsfdgNoStrategy, DataSource dataSource){
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(stsfdgNoStrategy);

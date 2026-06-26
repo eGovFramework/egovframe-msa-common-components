@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 public class EgovSearchIdGeneration {
 
 	@Bean(name="searchIdStrategy")
-	public EgovIdGnrStrategyImpl searchIdStrategy() {
+	EgovIdGnrStrategyImpl searchIdStrategy() {
 		EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
 		egovIdGnrStrategyImpl.setPrefix("SYNC_");
 		egovIdGnrStrategyImpl.setCipers(15);
@@ -20,7 +20,7 @@ public class EgovSearchIdGeneration {
 	}
 
 	@Bean(name="egovIdGnrService", destroyMethod="destroy")
-	public EgovTableIdGnrServiceImpl egovIdGnrService(DataSource dataSource) {
+	EgovTableIdGnrServiceImpl egovIdGnrService(DataSource dataSource) {
 		EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
 		egovTableIdGnrServiceImpl.setDataSource(dataSource);
 		egovTableIdGnrServiceImpl.setStrategy(searchIdStrategy());

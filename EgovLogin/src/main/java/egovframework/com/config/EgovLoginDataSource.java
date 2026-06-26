@@ -39,7 +39,7 @@ public class EgovLoginDataSource {
     private long maxLifetime;
 
     @Bean(name="dataSource")
-    public DataSource dataSource() {
+    DataSource dataSource() {
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(driverClassName);
         config.setJdbcUrl(url);

@@ -29,7 +29,7 @@ public class AuthorizeTokenRedisConfig {
     private String password;
 
     @Bean
-    public RedisConnectionFactory redisConnectionFactory() {
+    RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(this.host);
         redisStandaloneConfiguration.setPort(this.port);
@@ -38,7 +38,7 @@ public class AuthorizeTokenRedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, AuthorizeToken> authorizeRedisTemplate() {
+    RedisTemplate<String, AuthorizeToken> authorizeRedisTemplate() {
         RedisTemplate<String, AuthorizeToken> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
@@ -47,7 +47,7 @@ public class AuthorizeTokenRedisConfig {
     }
 
     @Bean
-    public RedisTemplate<String, String> tokenRedisTemplate() {
+    RedisTemplate<String, String> tokenRedisTemplate() {
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
@@ -56,7 +56,7 @@ public class AuthorizeTokenRedisConfig {
     }
 
     @Bean
-    public RedisCacheManager redisCacheManager() {
+    RedisCacheManager redisCacheManager() {
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofHours(1L))
                 .disableCachingNullValues();

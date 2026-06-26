@@ -10,7 +10,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class EgovMainCommon {
 
     @Bean
-    public ReloadableResourceBundleMessageSource messageSource() {
+    ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames(
                 "classpath:/messages/egovframework/com/message-common",
@@ -24,12 +24,12 @@ public class EgovMainCommon {
     }
 
     @Bean
-    public MessageSourceAccessor messageSourceAccessor() {
+    MessageSourceAccessor messageSourceAccessor() {
         return new MessageSourceAccessor(messageSource());
     }
 
     @Bean
-    public SessionLocaleResolver localeResolver() {
+    SessionLocaleResolver localeResolver() {
         return new SessionLocaleResolver();
     }
 

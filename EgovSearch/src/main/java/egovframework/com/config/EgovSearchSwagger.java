@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class EgovSearchSwagger {
 
     @Bean
-    public OpenAPI api() {
+    OpenAPI api() {
         Info info = new Info()
                 .title("Open Search 연동 API Document")
                 .version("v0.0.1")

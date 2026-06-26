@@ -31,7 +31,7 @@ public class EgovBoardRabbitMqConnection {
     private boolean synclogEnabled;
 
     @Bean
-    public CachingConnectionFactory connectionFactory() {
+    CachingConnectionFactory connectionFactory() {
 
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory();
         connectionFactory.setHost(rabbitmqHost);
@@ -56,7 +56,7 @@ public class EgovBoardRabbitMqConnection {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
+    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
 
         // 메시지 전송 실패 시 예외 핸들링

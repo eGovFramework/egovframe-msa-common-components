@@ -42,7 +42,7 @@ public class EgovWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SpringResourceTemplateResolver templateResolver() {
+    SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setPrefix("classpath:/templates/egovframework/com/");
         templateResolver.setSuffix(".html");
@@ -52,7 +52,7 @@ public class EgovWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public SpringTemplateEngine templateEngine() {
+    SpringTemplateEngine templateEngine() {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
         templateEngine.setTemplateResolver(templateResolver());
         templateEngine.setEnableSpringELCompiler(true);
@@ -60,7 +60,7 @@ public class EgovWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ThymeleafViewResolver thymeleafViewResolver() {
+    ThymeleafViewResolver thymeleafViewResolver() {
         ThymeleafViewResolver viewResolver = new ThymeleafViewResolver();
         viewResolver.setCharacterEncoding("UTF-8");
         viewResolver.setTemplateEngine(templateEngine());
@@ -68,7 +68,7 @@ public class EgovWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public ReloadableResourceBundleMessageSource messageSource() {
+    ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames(
                 "classpath:/egovframework/message/com/message-common",
@@ -82,17 +82,17 @@ public class EgovWebConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    public MessageSourceAccessor messageSourceAccessor() {
+    MessageSourceAccessor messageSourceAccessor() {
         return new MessageSourceAccessor(messageSource());
     }
 
     @Bean
-    public SessionLocaleResolver localeResolver() {
+    SessionLocaleResolver localeResolver() {
         return new SessionLocaleResolver();
     }
 
     @Bean
-    public LocaleChangeInterceptor localeChangeInterceptor() {
+    LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("language");
         return interceptor;
