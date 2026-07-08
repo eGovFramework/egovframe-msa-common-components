@@ -1,35 +1,37 @@
 package egovframework.com.filter;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import org.springframework.web.filter.OncePerRequestFilter;
-
+import egovframework.com.security.GatewayInternalAuthVerifier;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
+
 import java.io.IOException;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class AuthorizeFilter extends OncePerRequestFilter {
+
+    private final GatewayInternalAuthVerifier gatewayInternalAuthVerifier;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String secretCodeId = request.getHeader("X-CODE-ID");
+        String uri = request.getRequestURI();
+        if (!uri.startsWith("/mip/profile") && !uri.startsWith("/mip/vp")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-        if (!request.getRequestURI().startsWith("/mip/profile") &&
-                !request.getRequestURI().startsWith("/mip/vp")
-        ) {
-            String secretCode = "-WzAnecnlNewSEQwDgJ2BQ";
-            if (ObjectUtils.isEmpty(secretCodeId) || !secretCode.equals(secretCodeId)) {
-                log.warn("##### Access Denied: Unauthorized Access Attempt");
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                String errorPage = "/error/403.html";
-                response.sendRedirect(request.getContextPath() + errorPage);
-                return;
-            }
+        if (!gatewayInternalAuthVerifier.verify(request)) {
+            log.warn("##### Access Denied: invalid or missing gateway signature");
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            response.sendRedirect(request.getContextPath() + "/error/403.html");
+            return;
         }
 
         filterChain.doFilter(request, response);

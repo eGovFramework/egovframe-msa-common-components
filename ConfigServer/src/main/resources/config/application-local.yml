@@ -24,3 +24,6 @@ token:
   refreshSecret: "7FB814B9D7FFB3D675EF1F525C1D61B254227B3B0A771DDDBDFE4112A1F42F66" # sha256(egovframework)
   accessExpiration: 7200000 # TTL (millisecond, 2 Hour)
   refreshExpiration: 86400000 # TTL (millisecond, 1 Day)
+
+gateway:
+  internalSecret: "7FB814B9D7FFB3D675EF1F525C1D61B254227B3B0A771DDDBDFE4112A1F42F66" # Gateway-Downstream HMAC. 운영 시 token.accessSecret과 분리 권장

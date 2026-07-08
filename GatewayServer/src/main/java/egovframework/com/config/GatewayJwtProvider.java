@@ -1,5 +1,6 @@
 package egovframework.com.config;
 
+import egovframework.com.security.GatewayInternalAuthSupport;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -33,6 +34,9 @@ public class GatewayJwtProvider {
 
     @Value("${token.refreshExpiration}")
     private String refreshExpiration;
+
+    @Value("${gateway.internalSecret:${token.accessSecret}}")
+    private String internalSecret;
 
     private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
 
@@ -108,12 +112,29 @@ public class GatewayJwtProvider {
     }
 
     public ServerHttpRequest headerSetting(ServerWebExchange exchange, String accessToken) {
+        String path = exchange.getRequest().getURI().getPath();
+        String userId = extractUserId(accessToken);
+        String userNm = extractUserNm(accessToken);
+        String uniqId = extractUniqId(accessToken);
+        String timestamp = Long.toString(System.currentTimeMillis());
+        String signature;
+
+        try {
+            String payload = GatewayInternalAuthSupport.buildPayload(timestamp, userId, uniqId, path);
+            signature = GatewayInternalAuthSupport.sign(internalSecret, payload);
+        } catch (Exception e) {
+            log.error("Failed to create gateway internal signature", e);
+            throw new IllegalStateException("Gateway internal signature creation failed", e);
+        }
+
         return exchange.getRequest().mutate()
                 .headers(httpHeaders -> {
-                    httpHeaders.set("X-CODE-ID", encrypt("eGovFramework"));
-                    httpHeaders.set("X-USER-ID", extractUserId(accessToken));
-                    httpHeaders.set("X-USER-NM", extractUserNm(accessToken));
-                    httpHeaders.set("X-UNIQ-ID", extractUniqId(accessToken));
+                    GatewayInternalAuthSupport.stripTrustHeaders(httpHeaders);
+                    httpHeaders.set("X-USER-ID", userId);
+                    httpHeaders.set("X-USER-NM", userNm);
+                    httpHeaders.set("X-UNIQ-ID", uniqId);
+                    httpHeaders.set(GatewayInternalAuthSupport.HEADER_TIMESTAMP, timestamp);
+                    httpHeaders.set(GatewayInternalAuthSupport.HEADER_SIGNATURE, signature);
                 })
                 .build();
     }
