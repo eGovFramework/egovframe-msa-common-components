@@ -256,7 +256,7 @@ Push 인터페이스는 사용자의 모바일 신분증 앱의 **Push 알림 �
 
 Proxy-Mode 통신 방식은 SP 서버와 모바일 신분증 앱 사이에 **중개서버인 Proxy 서버를 거쳐** 양자가 데이터를 송수신하는 방식이다.
 
-## 아키텍처에 상세 및 비지니스 로직
+## 아키텍처에 상세 및 비즈니스 로직
 
 라이브러리 방식 및 QR-MPM Direct-Mode 방식을 적용한 아키텍처의 구체적인 데이터 흐름은 아래와 같다.
 
@@ -454,8 +454,8 @@ public class DirectServiceImpl implements DirectService {
 	 * Profile 요청
 	 * 
 	 * @MethodName getProfile
-	 * @param m310 M310 메세지
-	 * @return M310 메세지 + Profile
+	 * @param m310 M310 메시지
+	 * @return M310 메시지 + Profile
 	 * @throws SpException
 	 */
 	@Override
@@ -559,7 +559,7 @@ public class DirectServiceImpl implements DirectService {
 	 * VP 검증
 	 * 
 	 * @MethodName verifyVP
-	 * @param m400 M400메세지
+	 * @param m400 M400메시지
 	 * @return 검증 결과
 	 * @throws SpException
 	 */
