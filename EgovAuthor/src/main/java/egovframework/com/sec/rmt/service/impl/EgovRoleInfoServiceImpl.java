@@ -23,10 +23,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -111,7 +113,8 @@ public class EgovRoleInfoServiceImpl extends EgovAbstractServiceImpl implements 
     }
 
     @Override
-    public RoleInfoVO detail(RoleInfoVO roleInfoVO) {
+    public RoleInfoVO detail(RoleInfoVO roleInfoVO, Map<String, String> userInfo) {
+        requireAuthenticated(userInfo);
         String roleCode = roleInfoVO.getRoleCode();
         return repository.findById(roleCode).map(EgovRoleInfoUtility::roleEntityToVO).orElse(null);
     }
@@ -160,9 +163,17 @@ public class EgovRoleInfoServiceImpl extends EgovAbstractServiceImpl implements 
 
     @Transactional
     @Override
-    public void delete(RoleInfoVO roleInfoVO) {
+    public void delete(RoleInfoVO roleInfoVO, Map<String, String> userInfo) {
+        requireAuthenticated(userInfo);
         String roleCode = roleInfoVO.getRoleCode();
         repository.deleteById(roleCode);
+    }
+
+    private void requireAuthenticated(Map<String, String> userInfo) {
+        if (userInfo == null || ObjectUtils.isEmpty(userInfo.get("uniqId"))) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치 - 권한 마스터 데이터는 인증된 사용자만 접근
     }
 
 }

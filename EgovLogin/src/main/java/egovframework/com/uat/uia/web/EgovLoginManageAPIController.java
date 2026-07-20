@@ -317,7 +317,8 @@ public class EgovLoginManageAPIController {
                     .expiration(new Date(System.currentTimeMillis() + Long.parseLong(jwtProvider.getAccessExpiration())))
                     .build();
 
-            SecretKey key = jwtProvider.getSigningKey(jwtProvider.getRefreshSecret());
+            // 2026.07.13 KISA 보안취약점 조치 - accessToken은 accessSecret으로 서명
+            SecretKey key = jwtProvider.getSigningKey(jwtProvider.getAccessSecret());
             String newAccessToken = Jwts.builder().claims(claims).signWith(key).compact();
             
             // Redis에 새로운 accessToken의 해시값 업데이트

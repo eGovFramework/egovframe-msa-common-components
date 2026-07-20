@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -119,7 +120,12 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
     }
 
     @Override
-    public QustnrTmplatDTO detail(QustnrTmplatVO qustnrTmplatVO) {
+    public QustnrTmplatDTO detail(QustnrTmplatVO qustnrTmplatVO, Map<String, String> userInfo) {
+        QustnrTmplat template = repository.findById(qustnrTmplatVO.getQustnrTmplatId()).orElse(null);
+        if (template == null) {
+            return null;
+        }
+        assertOwner(template.getFrstRegisterId(), userInfo);
 
         QQustnrTmplat qustnrTmplat = QQustnrTmplat.qustnrTmplat;
         QUserMaster userMaster = QUserMaster.userMaster;
@@ -152,7 +158,7 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
             qustnrTmplatVO.setQustnrTmplatId(qustnrTmplatId);
 
             QustnrTmplat qustnrTmplat = EgovQustnrTmplatUtility.qustnrTmplatVOToEntity(qustnrTmplatVO);
-            qustnrTmplat.setQustnrTmplatImageInfo(qustnrTmplatVO.getQustnrTmplatImageInfo().getBytes());
+            qustnrTmplat.setQustnrTmplatImageInfo(validateAndGetImageBytes(qustnrTmplatVO.getQustnrTmplatImageInfo()));
             qustnrTmplat.setFrstRegistPnttm(LocalDateTime.now());
             qustnrTmplat.setFrstRegisterId(userInfo.get("uniqId"));
             qustnrTmplat.setLastUpdtPnttm(LocalDateTime.now());
@@ -171,6 +177,7 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
         String qustnrTmplatId = qustnrTmplatVO.getQustnrTmplatId();
         return repository.findById(qustnrTmplatId)
                 .map(item -> {
+                    assertOwner(item.getFrstRegisterId(), userInfo);
                     try {
                         return updateItem(item, qustnrTmplatVO, userInfo.get("uniqId"));
                     } catch (IOException e) {
@@ -183,10 +190,11 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
 
     @Transactional
     @Override
-    public boolean delete(QustnrTmplatVO qustnrTmplatVO) {
+    public boolean delete(QustnrTmplatVO qustnrTmplatVO, Map<String, String> userInfo) {
         String qustnrTmplatId = qustnrTmplatVO.getQustnrTmplatId();
         return repository.findById(qustnrTmplatId)
                 .map(result -> {
+                    assertOwner(result.getFrstRegisterId(), userInfo);
                     egovQustnrRspnsResultRepository.deleteByQustnrRspnsResultIdQustnrTmplatId(qustnrTmplatId);
                     egovQustnrRespondInfoRepository.deleteByQustnrRespondInfoIdQustnrTmplatId(qustnrTmplatId);
                     egovQustnrIemRepository.deleteByQustnrIemIdQustnrTmplatId(qustnrTmplatId);
@@ -199,13 +207,18 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
     }
 
     @Override
-    public byte[] getImage(String qustnrTmplatId) {
-        return repository.findById(qustnrTmplatId).get().getQustnrTmplatImageInfo();
+    public byte[] getImage(String qustnrTmplatId, Map<String, String> userInfo) {
+        return repository.findById(qustnrTmplatId)
+                .map(template -> {
+                    assertOwner(template.getFrstRegisterId(), userInfo);
+                    return template.getQustnrTmplatImageInfo();
+                })
+                .orElseThrow(() -> new IllegalStateException("권한이 없습니다."));
     }
 
     private QustnrTmplat updateItem(QustnrTmplat qustnrTmplat, QustnrTmplatVO qustnrTmplatVO, String uniqId) throws IOException {
         if (!"update".equals(qustnrTmplatVO.getQustnrTmplatImageState())) {
-            qustnrTmplat.setQustnrTmplatImageInfo(qustnrTmplatVO.getQustnrTmplatImageInfo().getBytes());
+            qustnrTmplat.setQustnrTmplatImageInfo(validateAndGetImageBytes(qustnrTmplatVO.getQustnrTmplatImageInfo()));
         }
         qustnrTmplat.setQustnrTmplatTy(qustnrTmplatVO.getQustnrTmplatTy());
         qustnrTmplat.setQustnrTmplatDc(qustnrTmplatVO.getQustnrTmplatDc());
@@ -213,6 +226,35 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
         qustnrTmplat.setLastUpdtPnttm(LocalDateTime.now());
         qustnrTmplat.setLastUpdusrId(uniqId);
         return qustnrTmplat;
+    }
+
+    // 2026.07.13 KISA 보안취약점 조치: 업로드된 이미지의 매직바이트를 검증하여 위장된 파일(HTML/스크립트) 저장을 방지
+    private static final byte[] JPEG_MAGIC = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+    private static final byte[] PNG_MAGIC = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+    private static final byte[] GIF_MAGIC = {0x47, 0x49, 0x46, 0x38};
+
+    private byte[] validateAndGetImageBytes(org.springframework.web.multipart.MultipartFile file) throws IOException {
+        byte[] bytes = file.getBytes();
+        if (!isValidImageContent(bytes)) {
+            throw new IOException("업로드된 파일이 유효한 이미지(JPEG/PNG/GIF) 형식이 아닙니다.");
+        }
+        return bytes;
+    }
+
+    private boolean isValidImageContent(byte[] bytes) {
+        return startsWith(bytes, JPEG_MAGIC) || startsWith(bytes, PNG_MAGIC) || startsWith(bytes, GIF_MAGIC);
+    }
+
+    private boolean startsWith(byte[] data, byte[] prefix) {
+        if (data == null || data.length < prefix.length) {
+            return false;
+        }
+        for (int i = 0; i < prefix.length; i++) {
+            if (data[i] != prefix[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private JPAQuery<Tuple> qustnrTmplatQuery(){
@@ -225,6 +267,17 @@ public class EgovQustnrTmplatServiceImpl extends EgovAbstractServiceImpl impleme
                 .from(qustnrTmplat)
                 .leftJoin(userMaster)
                 .on(qustnrTmplat.frstRegisterId.eq(userMaster.esntlId));
+    }
+
+    private void assertOwner(String frstRegisterId, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치
+        if (!Objects.equals(uniqId, frstRegisterId)) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
     }
 
 }

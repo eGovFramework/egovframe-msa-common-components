@@ -21,17 +21,6 @@ public class AuthorizeFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String uri = request.getRequestURI();
-        if (uri.contains("/ext/ops/createTextIndex") ||
-                uri.contains("/ext/ops/createVectorIndex") ||
-                uri.contains("/ext/ops/insertTextData") ||
-                uri.contains("/ext/ops/insertVectorData") ||
-                uri.contains("/ext/ops/deleteIndex") ||
-                uri.contains("/ext/ops/reprocess")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         if (!gatewayInternalAuthVerifier.verify(request)) {
             log.warn("##### Access Denied: invalid or missing gateway signature");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

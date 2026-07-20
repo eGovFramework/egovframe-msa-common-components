@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -87,6 +89,13 @@ public class EgovBoardCKEditorController {
             return response;
         }
 
+        // 실제 파일 콘텐츠(매직바이트)를 디코딩해 진짜 이미지인지 검증 (확장자 위조 방지)
+        if (!isActuallyImage(uploadFile)) {
+            response.put("uploaded", 0);
+            response.put("error", "Invalid file content.");
+            return response;
+        }
+
         File destinationFile = new File(uploadDir, newFileName);
         uploadFile.transferTo(destinationFile);
 
@@ -94,6 +103,34 @@ public class EgovBoardCKEditorController {
         response.put("url", fileUrl);
 
         return response;
+    }
+
+    // 2026.07.13 KISA 보안취약점 조치: 확장자만이 아니라 실제 이미지 콘텐츠(매직바이트)를 디코딩하여 검증
+    private boolean isActuallyImage(MultipartFile uploadFile) {
+        try (java.io.InputStream is = uploadFile.getInputStream()) {
+            BufferedImage image = ImageIO.read(is);
+            return image != null;
+        } catch (IOException e) {
+            log.warn("Failed to validate image content >>> {}", e.getMessage());
+            return false;
+        }
+    }
+
+    private String resolveImageContentType(String fileName) {
+        String extension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+        switch (extension) {
+            case "jpg":
+            case "jpeg":
+                return "image/jpeg";
+            case "gif":
+                return "image/gif";
+            case "bmp":
+                return "image/bmp";
+            case "png":
+                return "image/png";
+            default:
+                return "application/octet-stream";
+        }
     }
 
     @GetMapping("/cop/brd/ckeditor/{filename}")
@@ -113,6 +150,12 @@ public class EgovBoardCKEditorController {
         }
 
         File file = filePath.toFile();
+
+        // 2026.07.13 KISA 보안취약점 조치: 허용된 이미지 확장자에 대한 정확한 Content-Type 지정 및
+        // MIME 스니핑으로 인한 저장된 XSS 방지를 위한 X-Content-Type-Options 헤더 설정
+        response.setContentType(resolveImageContentType(filename));
+        response.setHeader("X-Content-Type-Options", "nosniff");
+        response.setHeader("Content-Disposition", "inline; filename=\"" + filename + "\"");
 
         // 파일을 읽어서 응답 스트림으로 전송
         try (FileInputStream fis = new FileInputStream(file);

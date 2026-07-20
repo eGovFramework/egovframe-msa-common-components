@@ -21,6 +21,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Service("gmtEgovAuthorGroupInfoService")
 public class EgovAuthorGroupInfoServiceImpl extends EgovAbstractServiceImpl implements EgovAuthorGroupInfoService {
@@ -88,10 +89,18 @@ public class EgovAuthorGroupInfoServiceImpl extends EgovAbstractServiceImpl impl
 
     @Transactional
     @Override
-    public boolean delete(AuthorGroupInfoVO authorGroupInfoVO) {
+    public boolean delete(AuthorGroupInfoVO authorGroupInfoVO, Map<String, String> userInfo) {
+        requireAuthenticated(userInfo);
         String groupId = authorGroupInfoVO.getGroupId();
         repository.deleteById(groupId);
         return !repository.existsById(groupId);
+    }
+
+    private void requireAuthenticated(Map<String, String> userInfo) {
+        if (userInfo == null || ObjectUtils.isEmpty(userInfo.get("uniqId"))) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치 - 그룹 마스터 데이터는 인증된 사용자만 삭제
     }
 
 }

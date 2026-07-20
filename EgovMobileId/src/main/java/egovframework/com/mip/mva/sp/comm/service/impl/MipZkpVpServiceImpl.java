@@ -17,7 +17,6 @@ import egovframework.com.mip.mva.sp.config.ConfigBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 /**
  * @Project 모바일 운전면허증 서비스 구축 사업
@@ -113,9 +112,12 @@ public class MipZkpVpServiceImpl implements MipZkpVpService {
 		String profileNonce = trxInfo.getZkpNonce();
 
 		try {
-			trxInfo.setTrxStsCode(TrxStsCodeEnum.VERIFY_REQ.getVal());
+			TrxInfoVO trxInfoNew = new TrxInfoVO();
 
-			trxInfoService.modifyTrxInfo(trxInfo);
+			trxInfoNew.setTrxcode(trxcode);
+			trxInfoNew.setTrxStsCode(TrxStsCodeEnum.VERIFY_REQ.getVal());
+
+			trxInfoService.modifyTrxInfo(trxInfoNew);
 
 			// VP 검증 Start
 			VCVerifyProfileResult vCVerifyProfileResult = new VCVerifyProfileResult();
@@ -138,18 +140,13 @@ public class MipZkpVpServiceImpl implements MipZkpVpService {
 			// VP 검증 End
 
 			// Nonce 위변조 확인 Start
-			String vpNonce = vp.getZkpNonce();
+			LOGGER.debug("profileNonce : {}, vpNonce : {}", profileNonce, vp.getZkpNonce());
 
-			LOGGER.debug("profileNonce : {}, vpNonce : {}", profileNonce, vpNonce);
-
-			if (ObjectUtils.isEmpty(vpNonce) || vp.getZkpNonce().indexOf(profileNonce) == -1) {
+			if (vp.getZkpNonce().indexOf(profileNonce) == -1) {
 				throw new SpException(MipErrorEnum.SP_MISMATCHING_NONCE, trxcode);
 			}
 			// Nonce 위변조 확인 End
 
-			TrxInfoVO trxInfoNew = new TrxInfoVO();
-
-			trxInfoNew.setTrxcode(trxcode);
 			trxInfoNew.setTrxStsCode(TrxStsCodeEnum.VERIFY_COM.getVal());
 			trxInfoNew.setVpVerifyResult(result ? "Y" : "N");
 			trxInfoNew.setVp(ConfigBean.gson.toJson(vp));

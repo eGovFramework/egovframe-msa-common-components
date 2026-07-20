@@ -63,8 +63,9 @@ public class EgovLoginPolicyAPIControllet {
     }
 
     @PostMapping(value="/loginPolicyDetail")
-    public ResponseEntity<?> loginPolicyDetail(@ModelAttribute LoginPolicyVO loginPolicyVO) {
-        LoginPolicyVO result = service.detail(loginPolicyVO);
+    public ResponseEntity<?> loginPolicyDetail(@ModelAttribute LoginPolicyVO loginPolicyVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        LoginPolicyVO result = service.detail(loginPolicyVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (!ObjectUtils.isEmpty(result)) {
@@ -132,8 +133,9 @@ public class EgovLoginPolicyAPIControllet {
     }
 
     @PostMapping(value="/loginPolicyDelete")
-    public ResponseEntity<?> loginPolicyDelete(@ModelAttribute LoginPolicyVO loginPolicyVO) {
-        service.delete(loginPolicyVO);
+    public ResponseEntity<?> loginPolicyDelete(@ModelAttribute LoginPolicyVO loginPolicyVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        service.delete(loginPolicyVO, userInfo);
         return ResponseEntity.ok("success");
     }
 

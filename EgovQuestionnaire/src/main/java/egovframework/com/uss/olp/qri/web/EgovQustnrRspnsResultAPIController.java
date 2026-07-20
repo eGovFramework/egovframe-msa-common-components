@@ -91,12 +91,13 @@ public class EgovQustnrRspnsResultAPIController {
     }
 
     @PostMapping("/qustnrRspnsResultStats")
-    public ResponseEntity<?> qustnrRspnsResultStats(@RequestBody QustnrRspnsResultVO qustnrRspnsResultVO) {
+    public ResponseEntity<?> qustnrRspnsResultStats(@RequestBody QustnrRspnsResultVO qustnrRspnsResultVO, HttpServletRequest request) {
         QestnrInfoDTO qestnrInfo = qustnrInfoService.detail(qustnrRspnsResultVO);
+        Map<String, String> userInfo = extracted(request);
         List<QustnrQesitmDTO> qustnrQesitmList = qustnrQesitmService.qustnrQesitmList(qustnrRspnsResultVO);
         List<QustnrIemDTO> qustnrIemList = qustnrIemService.qustnrIemList(qustnrRspnsResultVO);
-        List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats = service.qustnrRspnsResultMCStats(qustnrRspnsResultVO);
-        List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats = service.qustnrRspnsResultESStats(qustnrRspnsResultVO);
+        List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats = service.qustnrRspnsResultMCStats(qustnrRspnsResultVO, userInfo);
+        List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats = service.qustnrRspnsResultESStats(qustnrRspnsResultVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         response.put("qestnrInfo", qestnrInfo);

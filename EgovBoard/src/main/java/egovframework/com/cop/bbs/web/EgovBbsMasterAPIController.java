@@ -2,10 +2,10 @@ package egovframework.com.cop.bbs.web;
 
 import egovframework.com.cop.bbs.service.*;
 import egovframework.com.pagination.EgovKrdsPaginationRenderer;
+import egovframework.com.security.GatewayUserContextResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.egovframe.boot.crypto.service.impl.EgovEnvCryptoServiceImpl;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -35,7 +35,7 @@ public class EgovBbsMasterAPIController {
 
     private final EgovBbsMasterService service;
     private final EgovCmmnDetailCodeService cmmnDetailCodeService;
-    private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
+    private final GatewayUserContextResolver gatewayUserContextResolver;
     private final EgovKrdsPaginationRenderer egovKrdsPaginationRenderer;
 
     @PostMapping(value="/bbsMasterList")
@@ -92,7 +92,7 @@ public class EgovBbsMasterAPIController {
             return ResponseEntity.ok(response);
         }
 
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         BbsMasterVO result = service.insert(bbsMasterVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
@@ -118,7 +118,7 @@ public class EgovBbsMasterAPIController {
             return ResponseEntity.ok(response);
         }
 
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         BbsMasterVO result = service.update(bbsMasterVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
@@ -129,20 +129,6 @@ public class EgovBbsMasterAPIController {
             response.put("status", "error");
             return ResponseEntity.ok(response);
         }
-    }
-
-    private Map<String, String> extracted(HttpServletRequest request) {
-        Map<String, String> userInfo = new HashMap<>();
-
-        String encryptUserId = request.getHeader("X-USER-ID");
-        String encryptUserNm = request.getHeader("X-USER-NM");
-        String encryptUniqId = request.getHeader("X-UNIQ-ID");
-
-        userInfo.put("userId", egovEnvCryptoService.decrypt(encryptUserId));
-        userInfo.put("userName", egovEnvCryptoService.decrypt(encryptUserNm));
-        userInfo.put("uniqId", egovEnvCryptoService.decrypt(encryptUniqId));
-
-        return userInfo;
     }
 
 }

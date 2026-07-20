@@ -1,5 +1,6 @@
 package egovframework.com.cop.brd.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class StsfdgVO extends EgovDefaultVO implements Serializable {
     private long nttId = 0L;
     private String wrterId = "";
     private String wrterNm = "";
+    @JsonIgnore
     private String password = "";
     @EgovNullCheck(message = "{comCopBbs.boardMasterVO.detail.option2}{common.required.msg}")
     private String stsfdgCn = "";

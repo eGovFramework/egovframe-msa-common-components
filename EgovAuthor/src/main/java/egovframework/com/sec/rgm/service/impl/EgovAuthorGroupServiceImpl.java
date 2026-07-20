@@ -21,8 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -159,9 +161,17 @@ public class EgovAuthorGroupServiceImpl extends EgovAbstractServiceImpl implemen
 
     @Transactional
     @Override
-    public void delete(AuthorGroupVO authorGroupVO) {
+    public void delete(AuthorGroupVO authorGroupVO, Map<String, String> userInfo) {
+        requireAuthenticated(userInfo);
         String scrtyDtrmnTrgetId = authorGroupVO.getScrtyDtrmnTrgetId();
         repository.deleteById(scrtyDtrmnTrgetId);
+    }
+
+    private void requireAuthenticated(Map<String, String> userInfo) {
+        if (userInfo == null || ObjectUtils.isEmpty(userInfo.get("uniqId"))) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치 - 권한 그룹 매핑은 인증된 사용자만 삭제
     }
 
 }

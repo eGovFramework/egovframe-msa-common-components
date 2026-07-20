@@ -126,6 +126,11 @@
 <!-- Modal End -->
 
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         qustnrQesitmList();
 
@@ -187,33 +192,33 @@
                     const number = lineNumber + (index + 1);
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
-                    html += '<td class="text-center">'+qustnrQesitm.qustnrSj+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrQesitm.qustnrSj)+'</td>';
                     html += '<td class="text-center">'+
                         '<a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="qustnrQesitmDetail('+
-                        '\''+qustnrQesitm.qustnrQesitmId+'\''+
-                        ')">'+qustnrQesitm.qestnCn+
+                        '\''+escapeHtml(qustnrQesitm.qustnrQesitmId)+'\''+
+                        ')">'+escapeHtml(qustnrQesitm.qestnCn)+
                         '</a></td>';
-                    html += '<td class="text-center">'+qustnrQesitm.qestnTyNm+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrQesitm.qestnTyNm)+'</td>';
 
                     html += '<td class="text-center">';
 
                     if (qustnrQesitm.qestnTyNm === '[(#{comUssOlpQqm.regist.objectiveQuest})]') {
                         html += '<button type="button" class="krds-btn small open-modal" '+
-                            'data-tid="'+qustnrQesitm.qustnrTmplatId+'" data-qid="'+qustnrQesitm.qestnrId+'" data-qqid="'+qustnrQesitm.qustnrQesitmId+'" '+
+                            'data-tid="'+escapeHtml(qustnrQesitm.qustnrTmplatId)+'" data-qid="'+escapeHtml(qustnrQesitm.qestnrId)+'" data-qqid="'+escapeHtml(qustnrQesitm.qustnrQesitmId)+'" '+
                             'data-target="qustnrItemModal" id="qustnrItemBtn">'+buttonText+'</button>';
                     } else {
-                        html += qustnrQesitm.qestnTyNm;
+                        html += escapeHtml(qustnrQesitm.qestnTyNm);
                     }
 
                     html += '</td>';
 
                     html += '<td class="text-center">'+
                         '<button type="button" class="krds-btn small open-modal" '+
-                        'data-tid="'+qustnrQesitm.qustnrTmplatId+'" data-qid="'+qustnrQesitm.qestnrId+'" data-qqid="'+qustnrQesitm.qustnrQesitmId+'" '+
+                        'data-tid="'+escapeHtml(qustnrQesitm.qustnrTmplatId)+'" data-qid="'+escapeHtml(qustnrQesitm.qestnrId)+'" data-qqid="'+escapeHtml(qustnrQesitm.qustnrQesitmId)+'" '+
                         'data-target="qustnrRspnsResultModal" id="qustnrRspnsResultBtn">'+buttonText+'</button></td>';
 
-                    html += '<td class="text-center">'+qustnrQesitm.userNm+'</td>';
-                    html += '<td class="text-center">'+qustnrQesitm.frstRegistPnttm+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrQesitm.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrQesitm.frstRegistPnttm)+'</td>';
                     html += '</tr>';
                 });
             }

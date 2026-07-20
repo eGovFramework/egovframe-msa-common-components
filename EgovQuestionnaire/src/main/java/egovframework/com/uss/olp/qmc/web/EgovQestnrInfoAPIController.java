@@ -139,8 +139,9 @@ public class EgovQestnrInfoAPIController {
     }
 
     @PostMapping(value="/qestnrInfoDelete")
-    public ResponseEntity<?> qestnrInfoDelete(@ModelAttribute QestnrInfoVO qestnrInfoVO) {
-        boolean result = service.delete(qestnrInfoVO);
+    public ResponseEntity<?> qestnrInfoDelete(@ModelAttribute QestnrInfoVO qestnrInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        boolean result = service.delete(qestnrInfoVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (result) {
@@ -153,12 +154,13 @@ public class EgovQestnrInfoAPIController {
     }
 
     @PostMapping("/qustnrRspnsResultStats")
-    public ResponseEntity<?> qustnrRspnsResultStats(@RequestBody QestnrInfoVO qestnrInfoVO) {
+    public ResponseEntity<?> qustnrRspnsResultStats(@RequestBody QestnrInfoVO qestnrInfoVO, HttpServletRequest request) {
         QestnrInfoDTO qestnrInfo = service.detail(qestnrInfoVO);
+        Map<String, String> userInfo = extracted(request);
         List<QustnrQesitmDTO> qustnrQesitmList = qustnrQesitmService.qustnrQesitmList(qestnrInfoVO);
         List<QustnrIemDTO> qustnrIemList = qustnrIemService.qustnrIemList(qestnrInfoVO);
-        List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats = qustnrRspnsResultService.qustnrRspnsResultMCStats(qestnrInfoVO);
-        List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats = qustnrRspnsResultService.qustnrRspnsResultESStats(qestnrInfoVO);
+        List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats = qustnrRspnsResultService.qustnrRspnsResultMCStats(qestnrInfoVO, userInfo);
+        List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats = qustnrRspnsResultService.qustnrRspnsResultESStats(qestnrInfoVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         response.put("qestnrInfo", qestnrInfo);

@@ -1,5 +1,6 @@
 package egovframework.com.ext.ops.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class BbsDTO {
     private String ntceEndde;
     private String ntcrId;
     private String ntcrNm;
+    @JsonIgnore
     private String password;
     private String atchFileId;
     private String noticeAt;

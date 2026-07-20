@@ -121,6 +121,11 @@
         window.location.href = '/sec/rmt/roleInfoListView';
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function roleInfoDetail() {
         const updateForm = document.getElementById('updateForm');
         const formData = new FormData(updateForm);
@@ -151,9 +156,9 @@
                 cmmnDetailCodeList.forEach(function (cmmnDetailCode, index) {
                     if (cmmnDetailCode.code === 'url') {
                         if (roleTy === cmmnDetailCode.code) {
-                            html += '<option value="' + cmmnDetailCode.code + '" selected>' + cmmnDetailCode.codeNm + '</option>';
+                            html += '<option value="' + escapeHtml(cmmnDetailCode.code) + '" selected>' + escapeHtml(cmmnDetailCode.codeNm) + '</option>';
                         } else {
-                            html += '<option value="' + cmmnDetailCode.code + '">' + cmmnDetailCode.codeNm + '</option>';
+                            html += '<option value="' + escapeHtml(cmmnDetailCode.code) + '">' + escapeHtml(cmmnDetailCode.codeNm) + '</option>';
                         }
                     }
                 });

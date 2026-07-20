@@ -3,6 +3,7 @@ package egovframework.com.mip.mva.sp.comm.web;
 import com.google.gson.JsonSyntaxException;
 import com.raonsecure.omnione.core.data.iw.Unprotected;
 import egovframework.com.mip.mva.sp.comm.enums.MipErrorEnum;
+import egovframework.com.mip.mva.sp.comm.enums.TrxStsCodeEnum;
 import egovframework.com.mip.mva.sp.comm.exception.SpException;
 import egovframework.com.mip.mva.sp.comm.service.DirectService;
 import egovframework.com.mip.mva.sp.comm.service.MipDidVpService;
@@ -348,8 +349,19 @@ public class MipController {
 			LOGGER.debug("data : {}", data);
 
 			TrxInfoVO trxInfo = ConfigBean.gson.fromJson(data, TrxInfoVO.class);
+			if (trxInfo == null || ObjectUtils.isEmpty(trxInfo.getTrxcode())) {
+				throw new SpException(MipErrorEnum.SP_UNEXPECTED_MSG_FORMAT, null, "privacy");
+			}
 
-			List<Unprotected> privacy = mipDidVpService.getPrivacy(trxInfo.getTrxcode());
+			TrxInfoVO storedTrxInfo = trxInfoService.getTrxInfo(trxInfo.getTrxcode());
+			if (!TrxStsCodeEnum.VERIFY_COM.getVal().equals(storedTrxInfo.getTrxStsCode())) {
+				throw new SpException(MipErrorEnum.SP_TRXINFO_NOT_FOUND, trxInfo.getTrxcode(), "VP verification not completed");
+			}
+			if (ObjectUtils.isEmpty(storedTrxInfo.getVp())) {
+				throw new SpException(MipErrorEnum.SP_TRXINFO_NOT_FOUND, trxInfo.getTrxcode(), "VP not found");
+			}
+
+			List<Unprotected> privacy = mipDidVpService.getPrivacy(storedTrxInfo.getTrxcode());
 			//수정 전 원본(2025.02.13 박성완)
 			//mipApiData.setResult(true);
 			//mipApiData.setData(Base64Util.encode(ConfigBean.gson.toJson(privacy)));

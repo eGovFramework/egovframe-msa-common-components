@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -233,7 +234,12 @@ public class EgovQestnrInfoServiceImpl extends EgovAbstractServiceImpl implement
 
     @Transactional
     @Override
-    public boolean delete(QestnrInfoVO qestnrInfoVO) {
+    public boolean delete(QestnrInfoVO qestnrInfoVO, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+
         String qustnrTmplatId = qestnrInfoVO.getQustnrTmplatId();
         String qestnrId = qestnrInfoVO.getQestnrId();
 
@@ -243,6 +249,10 @@ public class EgovQestnrInfoServiceImpl extends EgovAbstractServiceImpl implement
 
         return repository.findById(qestnrInfoId)
                 .map(result -> {
+                    // 2026.07.13 KISA 보안취약점 조치
+                    if (!Objects.equals(uniqId, result.getFrstRegisterId())) {
+                        throw new IllegalStateException("권한이 없습니다.");
+                    }
                     qustnrRespondInfoRepository.deleteByQustnrRespondInfoIdQustnrTmplatIdAndQustnrRespondInfoIdQestnrId(qustnrTmplatId, qestnrId);
                     qustnrRspnsResultRepository.deleteByQustnrRspnsResultIdQustnrTmplatIdAndQustnrRspnsResultIdQestnrId(qustnrTmplatId, qestnrId);
                     qustnrIemRepository.deleteByQustnrIemIdQustnrTmplatIdAndQustnrIemIdQestnrId(qustnrTmplatId, qestnrId);

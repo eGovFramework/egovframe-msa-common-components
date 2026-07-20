@@ -2,8 +2,10 @@ package egovframework.com.sec.rmt.web;
 
 import egovframework.com.pagination.EgovKrdsPaginationRenderer;
 import egovframework.com.sec.rmt.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.egovframe.boot.crypto.service.impl.EgovEnvCryptoServiceImpl;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,7 @@ public class EgovRoleInfoAPIController {
     private final EgovRoleInfoService service;
     private final EgovCmmnDetailCodeService cmmnDetailCodeService;
     private final EgovKrdsPaginationRenderer egovKrdsPaginationRenderer;
+    private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
 
     @PostMapping(value="/roleInfoList")
     public ResponseEntity<?> roleInfoList(@ModelAttribute RoleInfoVO roleInfoVO) {
@@ -60,8 +63,9 @@ public class EgovRoleInfoAPIController {
     }
 
     @PostMapping(value="/roleInfoDetail")
-    public ResponseEntity<?> roleInfoDetail(@ModelAttribute RoleInfoVO roleInfoVO) {
-        RoleInfoVO result = service.detail(roleInfoVO);
+    public ResponseEntity<?> roleInfoDetail(@ModelAttribute RoleInfoVO roleInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        RoleInfoVO result = service.detail(roleInfoVO, userInfo);
         List<CmmnDetailCodeVO> list = cmmnDetailCodeService.list();
 
         Map<String, Object> response = new HashMap<>();
@@ -127,9 +131,21 @@ public class EgovRoleInfoAPIController {
     }
 
     @PostMapping(value="/roleInfoDelete")
-    public ResponseEntity<?> roleInfoDelete(@ModelAttribute RoleInfoVO roleInfoVO) {
-        service.delete(roleInfoVO);
+    public ResponseEntity<?> roleInfoDelete(@ModelAttribute RoleInfoVO roleInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        service.delete(roleInfoVO, userInfo);
         return ResponseEntity.ok("success");
+    }
+
+    private Map<String, String> extracted(HttpServletRequest request) {
+        Map<String, String> userInfo = new HashMap<>();
+        String encryptUserId = request.getHeader("X-USER-ID");
+        String encryptUserNm = request.getHeader("X-USER-NM");
+        String encryptUniqId = request.getHeader("X-UNIQ-ID");
+        userInfo.put("userId", egovEnvCryptoService.decrypt(encryptUserId));
+        userInfo.put("userName", egovEnvCryptoService.decrypt(encryptUserNm));
+        userInfo.put("uniqId", egovEnvCryptoService.decrypt(encryptUniqId));
+        return userInfo;
     }
 
 }

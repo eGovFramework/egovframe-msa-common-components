@@ -41,6 +41,11 @@
 <div id="qustnrItem-pagination-container" class="krds-pagination w-page"></div>
 
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function qustnrItemList() {
         const param = {
             qustnrTmplatId: document.getElementById('qustnrTmplatId').value,
@@ -70,11 +75,11 @@
                     const number = lineNumber + (index + 1);
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
-                    html += '<td class="text-center">'+qustnrItem.qustnrSj+'</td>';
-                    html += '<td class="text-center">'+qustnrItem.qestnCn+'</td>';
-                    html += '<td class="text-center">'+qustnrItem.iemCn+'</td>';
-                    html += '<td class="text-center">'+qustnrItem.userNm+'</td>';
-                    html += '<td class="text-center">'+qustnrItem.frstRegistPnttm+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrItem.qustnrSj)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrItem.qestnCn)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrItem.iemCn)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrItem.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrItem.frstRegistPnttm)+'</td>';
                     html += '</tr>';
                 });
             }

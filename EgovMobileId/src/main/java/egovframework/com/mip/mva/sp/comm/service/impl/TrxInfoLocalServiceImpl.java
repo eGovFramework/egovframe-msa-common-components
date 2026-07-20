@@ -106,7 +106,7 @@ public class TrxInfoLocalServiceImpl implements TrxInfoService {
 	
 	/**
 	 * 거래정보 수정
-	 * 
+	 *
 	 * @MethodName modifyTrxInfo
 	 * @param trxInfo 거래정보
 	 * @throws SpException
@@ -114,38 +114,38 @@ public class TrxInfoLocalServiceImpl implements TrxInfoService {
 	@Override
 	public void modifyTrxInfo(TrxInfoVO trxInfo) throws SpException {
 		LOGGER.debug("Start modifyTrxInfo(TrxInfoVO trxInfo) | trxInfo : {}", trxInfo.toString());
-		
+
 		try {
-			String sysdate = getSysDate();
-			
 			int index = searchIndex(trxInfo.getTrxcode());
 			TrxInfoVO targetTrxInfo = trxList.get(index);
-			
+
 			LOGGER.debug("targetTrxInfo which is not yet Modified | targetTrxInfo : {}", targetTrxInfo.toString());
-			
+
+			String sysdate = getSysDate();
+
 			String trxStsCode = trxInfo.getTrxStsCode();
 			//trxStsCode
 			targetTrxInfo.setTrxStsCode(trxStsCode);
-			
+
 			switch(trxStsCode) {
-				case "0002" :
-					//profileSendDt
-					targetTrxInfo.setProfileSendDt(sysdate);
-				case "0003" :
-					//vpReceptDt
-					targetTrxInfo.setVpReceptDt(sysdate);
-				case "0004" :
-					//imgSendDt
-					targetTrxInfo.setImgSendDt(sysdate);
-					break;
+			case "0002" :
+				//profileSendDt
+				targetTrxInfo.setProfileSendDt(sysdate);
+			case "0003" :
+				//vpReceptDt
+				targetTrxInfo.setVpReceptDt(sysdate);
+			case "0004" :
+				//imgSendDt
+				targetTrxInfo.setImgSendDt(sysdate);
+				break;
 			};
-			
+
 	        // nonce, zkpNonce, vp, errorCn : null과 empty 체크 후 설정
 			setIfNotNullOrNotEmpty(trxInfo.getNonce(), targetTrxInfo::setNonce);
 			setIfNotNullOrNotEmpty(trxInfo.getZkpNonce(), targetTrxInfo::setZkpNonce);
 			setIfNotNullOrNotEmpty(trxInfo.getVp(), targetTrxInfo::setVp);
 			setIfNotNullOrNotEmpty(trxInfo.getErrorCn(), targetTrxInfo::setErrorCn);
-			
+
 			//vpVerifyResult
 			String vpVerifyResult = trxInfo.getVpVerifyResult();
 	        targetTrxInfo.setVpVerifyResult(
@@ -153,18 +153,17 @@ public class TrxInfoLocalServiceImpl implements TrxInfoService {
 	        			? "N"
 	        			: vpVerifyResult
 	        );
-			
+
 			//udtDt
 			targetTrxInfo.setUdtDt(sysdate);
-			
+
 			//update 실행
 			//trxList.set(index, targetTrxInfo);
-			
+
 			LOGGER.debug("End modifyTrxInfo(TrxInfoVO trxInfo)");
 			LOGGER.debug("targetTrxInfo which is Modified | ------- targetTrxInfo : {}", targetTrxInfo.toString());
 			LOGGER.info(this.toString());
-			
-		}catch (Exception e) {
+		} catch (Exception e) {
 			throw new SpException(MipErrorEnum.SP_TRXLIST_ERROR, trxInfo.getTrxcode(), "trxInfo update error");
 		}
 	}

@@ -1,5 +1,6 @@
 package egovframework.com.cop.brd.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,6 +42,7 @@ public class CommentVO extends EgovDefaultVO implements Serializable {
 
     private String lastUpdusrId;
 
+    @JsonIgnore
     private String password;
 
 }

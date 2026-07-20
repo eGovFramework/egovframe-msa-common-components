@@ -476,16 +476,42 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         }
     }
 
+    // 2026.07.13 KISA 보안취약점 조치: 무제한 재귀로 인한 StackOverflowError를 방지하기 위해
+    // 재귀 호출을 명시적 스택 기반의 반복(iterative) 처리로 변경하고, 이미 방문한 (bbsId, nttId)
+    // 조합을 Set으로 추적하여 순환 참조 및 중복 처리를 차단한다.
     private void parntsItem(String bbsId, long nttId) {
-        List<Bbs> rList = repository.findAllByParntscttNo((int) nttId);
-        List<Comment> commentList = egovCommentRepository.findAllByCommentId_BbsIdAndCommentId_NttId(bbsId, nttId);
-        if (rList.isEmpty()) {
-            log.debug("더 이상 답글 없음");
-        } else {
-            for (int i = 0; i < rList.size(); i++) {
-                rList.get(i).setUseAt("N");
-                repository.save(rList.get(i));
-                parntsItem(rList.get(i).getBbsId().getBbsId(), rList.get(i).getBbsId().getNttId());
+        Deque<String> stack = new ArrayDeque<>();
+        Set<String> visited = new HashSet<>();
+
+        stack.push(bbsId + ":" + nttId);
+        visited.add(bbsId + ":" + nttId);
+
+        while (!stack.isEmpty()) {
+            String[] current = stack.pop().split(":", 2);
+            String curBbsId = current[0];
+            long curNttId = Long.parseLong(current[1]);
+
+            List<Bbs> rList = repository.findAllByParntscttNo((int) curNttId);
+            List<Comment> commentList = egovCommentRepository.findAllByCommentId_BbsIdAndCommentId_NttId(curBbsId, curNttId);
+
+            if (rList.isEmpty()) {
+                log.debug("더 이상 답글 없음");
+            } else {
+                for (Bbs child : rList) {
+                    child.setUseAt("N");
+                    repository.save(child);
+
+                    String childBbsId = child.getBbsId().getBbsId();
+                    long childNttId = child.getBbsId().getNttId();
+                    String childKey = childBbsId + ":" + childNttId;
+
+                    // 순환 참조(자기 자신을 상위/하위로 다시 참조) 감지 시 스킵하여 무한루프 방지
+                    if (visited.add(childKey)) {
+                        stack.push(childKey);
+                    } else {
+                        log.warn("순환 참조가 감지되어 처리를 건너뜁니다. bbsId={}, nttId={}", childBbsId, childNttId);
+                    }
+                }
             }
 
             for (Comment comment : commentList) {

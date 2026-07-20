@@ -65,6 +65,12 @@
     <div id="pagination-container" class="krds-pagination w-page"></div>
 </div>
 <script th:inline="javascript" defer>
+    // 2026.07.13 KISA 보안취약점 조치: 서버에서 내려온 신뢰할 수 없는 값을 HTML에 삽입하기 전 이스케이프 처리
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     loginPolicyList();
 
     function loginPolicySearch() {
@@ -95,14 +101,14 @@
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+
-                        '<a class="krds-btn text small" onclick="loginPolicyDetail(\''+index+'\')" style="cursor: pointer" tabindex="0">'+loginPolicy.userId+'</a>'+
-                        '<input type="hidden" name="id" value="'+loginPolicy.userId+'">'+
-                        '<input type="hidden" name="name" value="'+loginPolicy.userNm+'">'+
-                        '<input type="hidden" name="use" value="'+loginPolicy.regYn+'">'+
+                        '<a class="krds-btn text small" onclick="loginPolicyDetail(\''+index+'\')" style="cursor: pointer" tabindex="0">'+escapeHtml(loginPolicy.userId)+'</a>'+
+                        '<input type="hidden" name="id" value="'+escapeHtml(loginPolicy.userId)+'">'+
+                        '<input type="hidden" name="name" value="'+escapeHtml(loginPolicy.userNm)+'">'+
+                        '<input type="hidden" name="use" value="'+escapeHtml(loginPolicy.regYn)+'">'+
                         '</td>';
-                    html += '<td class="text-center">'+loginPolicy.userNm+'</td>';
-                    html += '<td class="text-center">'+loginPolicy.ipInfo+'</td>';
-                    html += '<td class="text-center">'+loginPolicy.lmttAt+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(loginPolicy.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(loginPolicy.ipInfo)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(loginPolicy.lmttAt)+'</td>';
                     html += '</tr>';
                 });
             }

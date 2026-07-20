@@ -892,7 +892,7 @@ public class VerifyManager implements InitializingBean {
 				}
 			}
 
-			LOGGER.debug("vcResult : {}", ConfigBean.gson.toJson(vcResult));
+			LOGGER.debug("vcResult : {}", vcResult.toJson());
 		} catch (Exception e) {
 			throw new SpException(MipErrorEnum.UNKNOWN_ERROR, null, e.getMessage());
 		}

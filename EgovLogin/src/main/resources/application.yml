@@ -65,11 +65,6 @@ Globals:
 
 org:
   egovframe:
-    crypto:
-      algorithm: SHA-256
-      algorithmKey: egovframe
-      algorithmKeyHash: gdyYs/IZqY86VcWhT8emCYfqY1ahw2vtLG+/FzNqtrQ=
-
     security:
       loginUrl: /uat/uia/loginView                    # 로그인 페이지 URL
       loginFailureUrl: /uat/uia/loginFailure          # 로그인 실패 시 이동 URL

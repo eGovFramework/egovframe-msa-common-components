@@ -14,6 +14,6 @@ public interface EgovQestnrInfoService {
 
     QestnrInfoVO update(QestnrInfoVO qestnrInfoVO, Map<String, String> userInfo);
 
-    boolean delete(QestnrInfoVO qestnrInfoVO);
+    boolean delete(QestnrInfoVO qestnrInfoVO, Map<String, String> userInfo);
 
 }

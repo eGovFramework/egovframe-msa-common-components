@@ -21,9 +21,16 @@ jpa:
 
 token:
   accessSecret: "7FB814B9D7FFB3D675EF1F525C1D61B254227B3B0A771DDDBDFE4112A1F42F66" # sha256(egovframework)
-  refreshSecret: "7FB814B9D7FFB3D675EF1F525C1D61B254227B3B0A771DDDBDFE4112A1F42F66" # sha256(egovframework)
+  refreshSecret: "C8A1E0F3B2D9475E6A1C0B9F8E7D6C5B4A39281706152433445566778899AABB" # sha256(egovframework-refresh) — access와 분리
   accessExpiration: 7200000 # TTL (millisecond, 2 Hour)
   refreshExpiration: 86400000 # TTL (millisecond, 1 Day)
 
 gateway:
   internalSecret: "7FB814B9D7FFB3D675EF1F525C1D61B254227B3B0A771DDDBDFE4112A1F42F66" # Gateway-Downstream HMAC. 운영 시 token.accessSecret과 분리 권장
+
+org:
+  egovframe:
+    crypto:
+      algorithm: SHA-256
+      algorithmKey: ${EGOV_CRYPTO_ALGORITHM_KEY:egovframe}
+      algorithmKeyHash: ${EGOV_CRYPTO_ALGORITHM_KEY_HASH:gdyYs/IZqY86VcWhT8emCYfqY1ahw2vtLG+/FzNqtrQ=}

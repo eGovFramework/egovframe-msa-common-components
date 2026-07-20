@@ -72,6 +72,11 @@
     </form>
 </div>
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         qustnrRespondInfoDetail();
     });
@@ -105,9 +110,9 @@
                 sexdstnHtml += '<option value="">' + buttonText + '</option>';
                 sexdstnList.forEach(function(sexdstn, index) {
                     if (sexdstnCode === sexdstn.code) {
-                        sexdstnHtml += '<option value="' + sexdstn.code + '" selected>' + sexdstn.codeNm + '</option>';
+                        sexdstnHtml += '<option value="' + escapeHtml(sexdstn.code) + '" selected>' + escapeHtml(sexdstn.codeNm) + '</option>';
                     } else {
-                        sexdstnHtml += '<option value="' + sexdstn.code + '">' + sexdstn.codeNm + '</option>';
+                        sexdstnHtml += '<option value="' + escapeHtml(sexdstn.code) + '">' + escapeHtml(sexdstn.codeNm) + '</option>';
                     }
                 });
                 const occpTyCode = response.result.occpTyCode;
@@ -116,9 +121,9 @@
                 occpTyHtml += '<option value="">' + buttonText + '</option>';
                 occpTyList.forEach(function(occpTy, index) {
                     if (occpTyCode === occpTy.code) {
-                        occpTyHtml += '<option value="' + occpTy.code + '" selected>' + occpTy.codeNm + '</option>';
+                        occpTyHtml += '<option value="' + escapeHtml(occpTy.code) + '" selected>' + escapeHtml(occpTy.codeNm) + '</option>';
                     } else {
-                        occpTyHtml += '<option value="' + occpTy.code + '">' + occpTy.codeNm + '</option>';
+                        occpTyHtml += '<option value="' + escapeHtml(occpTy.code) + '">' + escapeHtml(occpTy.codeNm) + '</option>';
                     }
                 });
 

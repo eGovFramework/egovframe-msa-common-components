@@ -146,6 +146,12 @@
     </form>
 </div>
 <script th:inline="javascript" defer>
+    // 2026.07.13 KISA 보안취약점 조치: 서버에서 내려온 신뢰할 수 없는 값을 HTML에 삽입하기 전 이스케이프 처리
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     $(document).ready(function() {
         bbsMasterDetail();
 
@@ -236,9 +242,9 @@
                 html += '<option value="">'+defaultText+'</option>';
                 cmmnDetailCodeList.forEach(function (cmmnDetailCode, index) {
                     if (bbsTyCode === cmmnDetailCode.code) {
-                        html += '<option value="'+cmmnDetailCode.code+'" selected>'+cmmnDetailCode.codeNm+'</option>';
+                        html += '<option value="'+escapeHtml(cmmnDetailCode.code)+'" selected>'+escapeHtml(cmmnDetailCode.codeNm)+'</option>';
                     } else {
-                        html += '<option value="'+cmmnDetailCode.code+'">'+cmmnDetailCode.codeNm+'</option>';
+                        html += '<option value="'+escapeHtml(cmmnDetailCode.code)+'">'+escapeHtml(cmmnDetailCode.codeNm)+'</option>';
                     }
                 });
                 $('#bbsTyCodes').html(html);

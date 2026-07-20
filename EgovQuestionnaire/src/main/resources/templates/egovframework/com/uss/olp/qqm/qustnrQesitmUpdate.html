@@ -88,6 +88,11 @@
     </form>
 </div>
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         qustnrQesitmDetail();
 
@@ -129,9 +134,9 @@
                 cmmnDetailCodeHtml += '<option value="">' + buttonText + '</option>';
                 cmmnDetailCodeList.forEach(function(cmmnDetailCode, index) {
                     if (qestnTyCode === cmmnDetailCode.code) {
-                        cmmnDetailCodeHtml += '<option value="' + cmmnDetailCode.code + '" selected>' + cmmnDetailCode.codeNm + '</option>';
+                        cmmnDetailCodeHtml += '<option value="' + escapeHtml(cmmnDetailCode.code) + '" selected>' + escapeHtml(cmmnDetailCode.codeNm) + '</option>';
                     } else {
-                        cmmnDetailCodeHtml += '<option value="' + cmmnDetailCode.code + '">' + cmmnDetailCode.codeNm + '</option>';
+                        cmmnDetailCodeHtml += '<option value="' + escapeHtml(cmmnDetailCode.code) + '">' + escapeHtml(cmmnDetailCode.codeNm) + '</option>';
                     }
                 });
                 document.getElementById('qestnTyCode').innerHTML = cmmnDetailCodeHtml;

@@ -3,8 +3,10 @@ package egovframework.com.sec.ram.web;
 import egovframework.com.pagination.EgovKrdsPaginationRenderer;
 import egovframework.com.sec.ram.service.AuthorInfoVO;
 import egovframework.com.sec.ram.service.EgovAuthorManageService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.egovframe.boot.crypto.service.impl.EgovEnvCryptoServiceImpl;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ public class EgovAuthorInfoAPIController {
 
     private final EgovAuthorManageService service;
     private final EgovKrdsPaginationRenderer egovKrdsPaginationRenderer;
+    private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
 
     @PostMapping(value="/authorInfoList")
     public ResponseEntity<?> authorInfoList(@ModelAttribute AuthorInfoVO authorInfoVO) {
@@ -59,8 +62,9 @@ public class EgovAuthorInfoAPIController {
     }
 
     @PostMapping(value="/authorInfoDetail")
-    public ResponseEntity<?> authorInfoDetail(@ModelAttribute AuthorInfoVO authorInfoVO) {
-        AuthorInfoVO result = service.detail(authorInfoVO);
+    public ResponseEntity<?> authorInfoDetail(@ModelAttribute AuthorInfoVO authorInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        AuthorInfoVO result = service.detail(authorInfoVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (!ObjectUtils.isEmpty(result)) {
@@ -124,8 +128,9 @@ public class EgovAuthorInfoAPIController {
     }
 
     @PostMapping(value="/authorInfoDelete")
-    public ResponseEntity<?> authorInfoDelete(@ModelAttribute AuthorInfoVO authorInfoVO) {
-        boolean result = service.delete(authorInfoVO);
+    public ResponseEntity<?> authorInfoDelete(@ModelAttribute AuthorInfoVO authorInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        boolean result = service.delete(authorInfoVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (result) {
@@ -135,6 +140,17 @@ public class EgovAuthorInfoAPIController {
             response.put("status", "error");
             return ResponseEntity.ok(response);
         }
+    }
+
+    private Map<String, String> extracted(HttpServletRequest request) {
+        Map<String, String> userInfo = new HashMap<>();
+        String encryptUserId = request.getHeader("X-USER-ID");
+        String encryptUserNm = request.getHeader("X-USER-NM");
+        String encryptUniqId = request.getHeader("X-UNIQ-ID");
+        userInfo.put("userId", egovEnvCryptoService.decrypt(encryptUserId));
+        userInfo.put("userName", egovEnvCryptoService.decrypt(encryptUserNm));
+        userInfo.put("uniqId", egovEnvCryptoService.decrypt(encryptUniqId));
+        return userInfo;
     }
 
 }

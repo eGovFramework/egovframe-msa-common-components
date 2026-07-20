@@ -97,6 +97,11 @@
         });
     });
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function cmmnCodeList() {
         $(location).attr('href', '/sym/ccm/cca/cmmnCodeListView');
     }
@@ -135,9 +140,9 @@
             let defaultText = '[(#{input.select})]';
 
             let html = '';
-            html += '<option value="">'+defaultText+'</option>';
+            html += '<option value="">'+escapeHtml(defaultText)+'</option>';
             cmmnClCodeList.forEach(function (cmmnClCode, index) {
-                html += '<option value="'+cmmnClCode.clCode+'">'+cmmnClCode.clCodeNm+'</option>';
+                html += '<option value="'+escapeHtml(cmmnClCode.clCode)+'">'+escapeHtml(cmmnClCode.clCodeNm)+'</option>';
             });
 
             $('#clCode').html(html);

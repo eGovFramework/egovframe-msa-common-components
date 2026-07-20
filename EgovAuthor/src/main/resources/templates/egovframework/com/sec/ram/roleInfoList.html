@@ -88,6 +88,11 @@
         }
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function roleInfoList() {
         const listForm = document.getElementById('listForm');
         const formData = new FormData(listForm);
@@ -116,13 +121,13 @@
                         '<label for="chk'+index+'"></label>'+
                         '</div>'+
                         '</div>'+
-                        '<input type="hidden" name="chkId" value="'+roleInfo.roleCode+'">'+
+                        '<input type="hidden" name="chkId" value="'+escapeHtml(roleInfo.roleCode)+'">'+
                         '</td>';
-                    html += '<td class="text-center">'+roleInfo.roleCode+'</td>';
-                    html += '<td>'+roleInfo.roleNm+'</td>';
-                    html += '<td class="text-center">'+roleInfo.roleTy+'</td>';
-                    html += '<td class="text-center">'+roleInfo.roleSort+'</td>';
-                    html += '<td>'+roleInfo.roleDc+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(roleInfo.roleCode)+'</td>';
+                    html += '<td>'+escapeHtml(roleInfo.roleNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(roleInfo.roleTy)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(roleInfo.roleSort)+'</td>';
+                    html += '<td>'+escapeHtml(roleInfo.roleDc)+'</td>';
 
                     let creatDtValue;
                     if (roleInfo.creatDt === '' || roleInfo.creatDt == null) {

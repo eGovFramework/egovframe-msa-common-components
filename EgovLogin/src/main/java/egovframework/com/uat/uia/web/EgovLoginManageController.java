@@ -2,6 +2,8 @@ package egovframework.com.uat.uia.web;
 
 import egovframework.com.uat.uia.service.LoginVO;
 import egovframework.com.uat.uia.util.EgovJwtProvider;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,12 +34,20 @@ public class EgovLoginManageController {
             loginVO = new LoginVO();
             model.addAttribute("loginVO", loginVO);
             return "uat/uia/login";
-        } else {
-            String userId = jwtProvider.decrypt(jwtProvider.extractUserId(accessToken));
-            String userNm = jwtProvider.decrypt(jwtProvider.extractUserNm(accessToken));
+        }
+        try {
+            // accessToken은 accessSecret으로 서명되므로 accessExtractClaims 사용
+            Claims claims = jwtProvider.accessExtractClaims(accessToken);
+            String userId = jwtProvider.decrypt(ObjectUtils.isEmpty(claims.get("userId")) ? "" : claims.get("userId").toString());
+            String userNm = jwtProvider.decrypt(ObjectUtils.isEmpty(claims.get("userNm")) ? "" : claims.get("userNm").toString());
             loginVO.setUserInfo(userNm + "(" + userId + ")");
             model.addAttribute("loginVO", loginVO);
             return "uat/uia/content";
+        } catch (JwtException | IllegalArgumentException e) {
+            // 만료·서명 불일치 등 잘못된 accessToken 쿠키는 로그인 화면으로 폴백
+            loginVO = new LoginVO();
+            model.addAttribute("loginVO", loginVO);
+            return "uat/uia/login";
         }
     }
 

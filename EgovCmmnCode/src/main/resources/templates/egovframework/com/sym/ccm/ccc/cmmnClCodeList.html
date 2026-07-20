@@ -75,6 +75,11 @@
         });
     });
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function cmmnClCodeSearch() {
         if (notNullCheck($('#searchKeyword').val())) {
             cmmnClCodeList();
@@ -102,10 +107,10 @@
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+
-                        '<a class="krds-btn text small" style="cursor: pointer" tabIndex="0" onclick="cmmnClCodeDetail(\''+cmmnClCode.clCode+'\')">'+
-                        cmmnClCode.clCode+'</a></td>';
-                    html += '<td class="text-center">'+cmmnClCode.clCodeNm+'</td>';
-                    html += '<td class="text-center">'+cmmnClCode.useAt+'</td>';
+                        '<a class="krds-btn text small cmmnClCodeDetailLink" style="cursor: pointer" tabIndex="0" data-cl-code="'+escapeHtml(cmmnClCode.clCode)+'">'+
+                        escapeHtml(cmmnClCode.clCode)+'</a></td>';
+                    html += '<td class="text-center">'+escapeHtml(cmmnClCode.clCodeNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(cmmnClCode.useAt)+'</td>';
                     html += '</tr>';
                 });
             }
@@ -114,6 +119,10 @@
             $('#pagination-container').html(pagination);
         });
     }
+
+    $(document).on('click', '.cmmnClCodeDetailLink', function() {
+        cmmnClCodeDetail($(this).data('clCode'));
+    });
 
     function linkPage(pageIndex) {
         $('#pageIndex').val(pageIndex);

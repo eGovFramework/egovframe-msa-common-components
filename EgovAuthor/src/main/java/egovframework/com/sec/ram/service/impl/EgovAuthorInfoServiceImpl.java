@@ -20,6 +20,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.Optional;
 
 @Service("ramEgovAuthorInfoService")
@@ -45,7 +46,8 @@ public class EgovAuthorInfoServiceImpl extends EgovAbstractServiceImpl implement
     }
 
     @Override
-    public AuthorInfoVO detail(AuthorInfoVO authorInfoVO) {
+    public AuthorInfoVO detail(AuthorInfoVO authorInfoVO, Map<String, String> userInfo) {
+        requireAuthenticated(userInfo);
         String authorCode = authorInfoVO.getAuthorCode();
         return repository.findById(authorCode).map(EgovAuthorInfoUtility::authorInfoEntityToVO).orElse(null);
     }
@@ -61,7 +63,7 @@ public class EgovAuthorInfoServiceImpl extends EgovAbstractServiceImpl implement
     @Transactional
     @Override
     public AuthorInfoVO update(AuthorInfoVO authorInfoVO) {
-        boolean result = delete(authorInfoVO);
+        boolean result = doDelete(authorInfoVO);
         if (result) {
             return insert(authorInfoVO);
         } else {
@@ -71,7 +73,12 @@ public class EgovAuthorInfoServiceImpl extends EgovAbstractServiceImpl implement
 
     @Transactional
     @Override
-    public boolean delete(AuthorInfoVO authorInfoVO) {
+    public boolean delete(AuthorInfoVO authorInfoVO, Map<String, String> userInfo) {
+        requireAuthenticated(userInfo);
+        return doDelete(authorInfoVO);
+    }
+
+    private boolean doDelete(AuthorInfoVO authorInfoVO) {
         String authorCode = authorInfoVO.getOriginalAuthorCode();
 
         QMenuCreateDetail menuCreateDetail = QMenuCreateDetail.menuCreateDetail;
@@ -90,6 +97,13 @@ public class EgovAuthorInfoServiceImpl extends EgovAbstractServiceImpl implement
             repository.deleteById(authorCode);
             return true;
         }
+    }
+
+    private void requireAuthenticated(Map<String, String> userInfo) {
+        if (userInfo == null || ObjectUtils.isEmpty(userInfo.get("uniqId"))) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치 - 권한 마스터 데이터는 인증된 사용자만 접근
     }
 
 }

@@ -24,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -221,6 +222,10 @@ public class EgovBbsMasterServiceImpl extends EgovAbstractServiceImpl implements
     @Transactional
     @Override
     public BbsMasterVO update(BbsMasterVO bbsMasterVO, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
         if (!"1".equals(bbsMasterVO.getBbsOption())) {
             BbsMasterOptnVO bbsMasterOptnVO = getBbsMasterOptnVO(bbsMasterVO, bbsMasterVO.getBbsId(), userInfo.get("uniqId"));
             optionRepository.findById(bbsMasterOptnVO.getBbsId())
@@ -236,6 +241,10 @@ public class EgovBbsMasterServiceImpl extends EgovAbstractServiceImpl implements
 
         return repository.findById(bbsMasterVO.getBbsId())
                 .map(result -> {
+                    // 2026.07.13 KISA 보안취약점 조치 - 소유자만 수정 가능
+                    if (!Objects.equals(uniqId, result.getFrstRegisterId())) {
+                        throw new IllegalStateException("권한이 없습니다.");
+                    }
                     result.setBbsNm(bbsMasterVO.getBbsNm());
                     result.setBbsIntrcn(bbsMasterVO.getBbsIntrcn());
                     result.setBbsTyCode(bbsMasterVO.getBbsTyCode());

@@ -162,7 +162,7 @@ public class EgovJwtProvider {
     public ResponseCookie createCookie(String tokenName, String tokenValue, long tokenMaxAge) {
         return ResponseCookie.from(tokenName, tokenValue)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .path("/")
                 .maxAge(tokenMaxAge + 10)
                 .sameSite("Strict")

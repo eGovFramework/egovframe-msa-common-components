@@ -63,8 +63,9 @@ public class EgovQustnrTmplatAPIController {
     }
 
     @PostMapping(value="/qustnrTmplatDetail")
-    public ResponseEntity<?> qustnrTmplatDetail(@ModelAttribute QustnrTmplatVO qustnrTmplatVO) {
-        QustnrTmplatDTO result = service.detail(qustnrTmplatVO);
+    public ResponseEntity<?> qustnrTmplatDetail(@ModelAttribute QustnrTmplatVO qustnrTmplatVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        QustnrTmplatDTO result = service.detail(qustnrTmplatVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (!ObjectUtils.isEmpty(result)) {
@@ -130,8 +131,9 @@ public class EgovQustnrTmplatAPIController {
     }
 
     @PostMapping(value="/qustnrTmplatDelete")
-    public ResponseEntity<?> qustnrTmplatDelete(@ModelAttribute QustnrTmplatVO qustnrTmplatVO) {
-        boolean result = service.delete(qustnrTmplatVO);
+    public ResponseEntity<?> qustnrTmplatDelete(@ModelAttribute QustnrTmplatVO qustnrTmplatVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        boolean result = service.delete(qustnrTmplatVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (result) {
@@ -144,15 +146,33 @@ public class EgovQustnrTmplatAPIController {
     }
 
     @GetMapping(value="/qustnrTmplatImage")
-    public void qustnrTmplatImage(HttpServletResponse response, @RequestParam("qustnrTmplatId") String qustnrTmplatId) throws IOException {
-        byte[] image = service.getImage(qustnrTmplatId);
-        response.setContentType("image/*");
+    public void qustnrTmplatImage(HttpServletResponse response, @RequestParam("qustnrTmplatId") String qustnrTmplatId, HttpServletRequest request) throws IOException {
+        Map<String, String> userInfo = extracted(request);
+        byte[] image = service.getImage(qustnrTmplatId, userInfo);
+        // 2026.07.13 KISA 보안취약점 조치: 실제 이미지 콘텐츠 유형으로 Content-Type 지정 및 MIME 스니핑 방지 헤더 추가
+        response.setContentType(detectImageContentType(image));
+        response.setHeader("X-Content-Type-Options", "nosniff");
         response.setContentLength(image.length);
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Pragma", "no-cache");
         response.getOutputStream().write(image);
         response.getOutputStream().flush();
         response.getOutputStream().close();
+    }
+
+    private String detectImageContentType(byte[] bytes) {
+        if (bytes != null) {
+            if (bytes.length >= 3 && (bytes[0] & 0xFF) == 0xFF && (bytes[1] & 0xFF) == 0xD8 && (bytes[2] & 0xFF) == 0xFF) {
+                return "image/jpeg";
+            }
+            if (bytes.length >= 8 && (bytes[0] & 0xFF) == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
+                return "image/png";
+            }
+            if (bytes.length >= 4 && bytes[0] == 0x47 && bytes[1] == 0x49 && bytes[2] == 0x46 && bytes[3] == 0x38) {
+                return "image/gif";
+            }
+        }
+        return "application/octet-stream";
     }
 
     private Map<String, String> extracted(HttpServletRequest request) {

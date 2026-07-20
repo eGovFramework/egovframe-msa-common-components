@@ -3,8 +3,10 @@ package egovframework.com.sec.gmt.web;
 import egovframework.com.pagination.EgovKrdsPaginationRenderer;
 import egovframework.com.sec.gmt.service.AuthorGroupInfoVO;
 import egovframework.com.sec.gmt.service.EgovAuthorGroupInfoService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.egovframe.boot.crypto.service.impl.EgovEnvCryptoServiceImpl;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -33,6 +35,7 @@ public class EgovAuthorGroupInfoAPIController {
 
     private final EgovAuthorGroupInfoService service;
     private final EgovKrdsPaginationRenderer egovKrdsPaginationRenderer;
+    private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
 
     @PostMapping(value="/authorGroupInfoList")
     public ResponseEntity<?> authorGroupInfoList(@ModelAttribute AuthorGroupInfoVO authorGroupInfoVO) {
@@ -124,8 +127,9 @@ public class EgovAuthorGroupInfoAPIController {
     }
 
     @PostMapping(value="/authorGroupInfoDelete")
-    public ResponseEntity<?> authorGroupInfoDelete(@ModelAttribute AuthorGroupInfoVO authorGroupInfoVO) {
-        boolean result = service.delete(authorGroupInfoVO);
+    public ResponseEntity<?> authorGroupInfoDelete(@ModelAttribute AuthorGroupInfoVO authorGroupInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        boolean result = service.delete(authorGroupInfoVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (result) {
@@ -135,6 +139,17 @@ public class EgovAuthorGroupInfoAPIController {
             response.put("status", "error");
             return ResponseEntity.ok(response);
         }
+    }
+
+    private Map<String, String> extracted(HttpServletRequest request) {
+        Map<String, String> userInfo = new HashMap<>();
+        String encryptUserId = request.getHeader("X-USER-ID");
+        String encryptUserNm = request.getHeader("X-USER-NM");
+        String encryptUniqId = request.getHeader("X-UNIQ-ID");
+        userInfo.put("userId", egovEnvCryptoService.decrypt(encryptUserId));
+        userInfo.put("userName", egovEnvCryptoService.decrypt(encryptUserNm));
+        userInfo.put("uniqId", egovEnvCryptoService.decrypt(encryptUniqId));
+        return userInfo;
     }
 
 }

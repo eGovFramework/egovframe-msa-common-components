@@ -11,8 +11,8 @@ public interface EgovQustnrRspnsResultService {
 
     boolean insert(QustnrRspnsResultVO qustnrRspnsResultVO, Map<String, String> userInfo);
 
-    List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats(QustnrRspnsResultVO qustnrRspnsResultVO);
+    List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats(QustnrRspnsResultVO qustnrRspnsResultVO, Map<String, String> userInfo);
 
-    List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats(QustnrRspnsResultVO qustnrRspnsResultVO);
+    List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats(QustnrRspnsResultVO qustnrRspnsResultVO, Map<String, String> userInfo);
 
 }

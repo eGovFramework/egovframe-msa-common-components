@@ -142,6 +142,11 @@
         }
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function authorGroupList() {
         $.ajax({
             url: '/sec/rgm/authorGroupList',
@@ -166,22 +171,22 @@
                         '<label for="chk'+index+'"></label>'+
                         '</div>'+
                         '</div>'+
-                        '<input type="hidden" name="chkId" value="'+author.esntlId+'">'+
+                        '<input type="hidden" name="chkId" value="'+escapeHtml(author.esntlId)+'">'+
                         '</td>';
-                    html += '<td class="text-center">'+author.userId+'</td>';
-                    html += '<td class="text-center">'+author.userNm+'</td>';
-                    html += '<td class="text-center">'+author.mberTyNm+
-                        '<input type="hidden" name="mberCode" value="'+author.mberTyCode+'"></td>';
+                    html += '<td class="text-center">'+escapeHtml(author.userId)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(author.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(author.mberTyNm)+
+                        '<input type="hidden" name="mberCode" value="'+escapeHtml(author.mberTyCode)+'"></td>';
                     html += '<td class="text-center"><select class="krds-form-select small" name="authCode"> ';
                     authorInfoList.forEach(function(authorInfo, index) {
                         let selected = '';
                         if (author.authorCode === authorInfo.authorCode) {
                             selected = 'selected';
                         }
-                        html += '<option value="'+authorInfo.authorCode+'" '+selected+'>'+authorInfo.authorNm+'</option>';
+                        html += '<option value="'+escapeHtml(authorInfo.authorCode)+'" '+selected+'>'+escapeHtml(authorInfo.authorNm)+'</option>';
                     });
                     html += '</select></td>';
-                    html += '<td class="text-center">'+author.regYn+'<input type="hidden" name="regYn" value="'+author.regYn+'"></td>';
+                    html += '<td class="text-center">'+escapeHtml(author.regYn)+'<input type="hidden" name="regYn" value="'+escapeHtml(author.regYn)+'"></td>';
                     html += '</tr>';
                 });
             }

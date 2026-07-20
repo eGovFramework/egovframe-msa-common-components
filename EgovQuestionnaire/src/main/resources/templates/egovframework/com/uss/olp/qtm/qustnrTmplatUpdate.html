@@ -91,6 +91,11 @@
     </form>
 </div>
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         qustnrTmplatDetail();
 
@@ -148,7 +153,7 @@
                 }
 
                 uploadResult.style.display = 'block';
-                const fileInfo = `${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
+                const fileInfo = `${escapeHtml(file.name)} (${(file.size / 1024).toFixed(2)} KB)`;
                 fileUploadList.innerHTML = `<li><div class="file-info">` +
                     `<div class="file-name">${fileInfo}</div>` +
                     `<div class="btn-wrap"><button type="button" class="krds-btn medium text" onclick="removeFile(this)">삭제 <i class="svg-icon ico-delete-fill"></i></button></div>` +

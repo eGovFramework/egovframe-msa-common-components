@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -112,7 +113,8 @@ public class EgovLoginPolicyServiceImpl extends EgovAbstractServiceImpl implemen
     }
 
     @Override
-    public LoginPolicyVO detail(LoginPolicyVO loginPolicyVO) {
+    public LoginPolicyVO detail(LoginPolicyVO loginPolicyVO, Map<String, String> userInfo) {
+        assertLoginPolicyOwner(loginPolicyVO.getEmployerId(), userInfo);
         String employerId = loginPolicyVO.getEmployerId();
         return this.repository.findById(employerId).map(EgovLoginPolicyUtility::entityToVO)
                 .orElse(new LoginPolicyVO(
@@ -143,6 +145,7 @@ public class EgovLoginPolicyServiceImpl extends EgovAbstractServiceImpl implemen
     @Transactional
     @Override
     public LoginPolicyVO update(LoginPolicyVO loginPolicyVO, Map<String, String> userInfo) {
+        assertLoginPolicyOwner(loginPolicyVO.getEmployerId(), userInfo);
         LoginPolicy loginPolicy = EgovLoginPolicyUtility.vOToEntity(loginPolicyVO);
         return this.repository.findById(loginPolicyVO.getEmployerId())
                 .map(result -> {
@@ -157,9 +160,21 @@ public class EgovLoginPolicyServiceImpl extends EgovAbstractServiceImpl implemen
 
     @Transactional
     @Override
-    public void delete(LoginPolicyVO loginPolicyVO) {
+    public void delete(LoginPolicyVO loginPolicyVO, Map<String, String> userInfo) {
+        assertLoginPolicyOwner(loginPolicyVO.getEmployerId(), userInfo);
         String employerId = loginPolicyVO.getEmployerId();
         this.repository.deleteById(employerId);
+    }
+
+    private void assertLoginPolicyOwner(String employerId, Map<String, String> userInfo) {
+        String userId = userInfo != null ? userInfo.get("userId") : null;
+        if (ObjectUtils.isEmpty(userId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치
+        if (!Objects.equals(userId, employerId)) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
     }
 
 }

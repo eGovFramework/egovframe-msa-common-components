@@ -97,6 +97,11 @@
 <!-- Modal End -->
 
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         qustnrRspnsResultList();
 
@@ -154,17 +159,17 @@
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+
                         '<a class="krds-btn text medium" style="cursor: pointer" tabindex="0" onclick="qustnrRspnsResultInsert(' +
-                        '\''+qustnrRspnsResult.qustnrTmplatId+'\',\''+qustnrRspnsResult.qestnrId+'\''+
-                        ')">'+qustnrRspnsResult.qustnrSj+
+                        '\''+escapeHtml(qustnrRspnsResult.qustnrTmplatId)+'\',\''+escapeHtml(qustnrRspnsResult.qestnrId)+'\''+
+                        ')">'+escapeHtml(qustnrRspnsResult.qustnrSj)+
                         '</a></td>';
-                    html += '<td class="text-center">'+qustnrRspnsResult.qustnrBgnde+' ~ '+qustnrRspnsResult.qustnrEndde+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrRspnsResult.qustnrBgnde)+' ~ '+escapeHtml(qustnrRspnsResult.qustnrEndde)+'</td>';
                     html += '<td class="text-center">'+
                         '<button type="button" class="krds-btn medium open-modal" '+
-                        'data-tid="'+qustnrRspnsResult.qustnrTmplatId+'" data-qid="'+qustnrRspnsResult.qestnrId+'" '+
+                        'data-tid="'+escapeHtml(qustnrRspnsResult.qustnrTmplatId)+'" data-qid="'+escapeHtml(qustnrRspnsResult.qestnrId)+'" '+
                         'data-target="qustnrRspnsResultModal" id="qustnrRspnsResultBtn">'+buttonText+'</button></td>';
 
-                    html += '<td class="text-center">'+qustnrRspnsResult.userNm+'</td>';
-                    html += '<td class="text-center">'+qustnrRspnsResult.frstRegistPnttm+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrRspnsResult.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrRspnsResult.frstRegistPnttm)+'</td>';
                     html += '</tr>';
                 });
             }

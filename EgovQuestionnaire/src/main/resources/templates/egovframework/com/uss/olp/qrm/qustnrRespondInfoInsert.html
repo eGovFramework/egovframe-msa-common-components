@@ -98,6 +98,11 @@
 <!-- Modal End -->
 
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         cmmnDetailCodeList();
     });
@@ -151,12 +156,12 @@
             let sexdstnHtml = '';
             sexdstnHtml += '<option value="">' + buttonText + '</option>';
             sexdstnList.forEach(function(sexdstn, index) {
-                sexdstnHtml += '<option value="' + sexdstn.code + '">' + sexdstn.codeNm + '</option>';
+                sexdstnHtml += '<option value="' + escapeHtml(sexdstn.code) + '">' + escapeHtml(sexdstn.codeNm) + '</option>';
             });
             let occpTyHtml = '';
             occpTyHtml += '<option value="">' + buttonText + '</option>';
             occpTyList.forEach(function(occpTy, index) {
-                occpTyHtml += '<option value="' + occpTy.code + '">' + occpTy.codeNm + '</option>';
+                occpTyHtml += '<option value="' + escapeHtml(occpTy.code) + '">' + escapeHtml(occpTy.codeNm) + '</option>';
             });
             document.getElementById('sexdstnCode').innerHTML = sexdstnHtml;
             document.getElementById('occpTyCode').innerHTML = occpTyHtml;

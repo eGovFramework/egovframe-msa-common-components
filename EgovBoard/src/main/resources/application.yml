@@ -89,13 +89,6 @@ management:
     rabbit:
       enabled: false
 
-org:
-  egovframe:
-    crypto:
-      algorithm: SHA-256
-      algorithmKey: egovframe
-      algorithmKeyHash: gdyYs/IZqY86VcWhT8emCYfqY1ahw2vtLG+/FzNqtrQ=
-
 file:
   ck:
     upload-dir: ${user.home}/upload/ckeditor

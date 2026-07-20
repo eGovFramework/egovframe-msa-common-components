@@ -75,6 +75,12 @@
         }
     }
 
+    // 2026.07.13 KISA 보안취약점 조치: 서버에서 내려온 신뢰할 수 없는 값을 HTML에 삽입하기 전 이스케이프 처리
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function blogList() {
         $.ajax({
             url: '/cop/bls/blogList',
@@ -92,11 +98,11 @@
                     html += '<tr>';
                     html += '<td class="text-center">' + number + '</td>';
                     html += '<td class="text-center">' +
-                        '<a class="krds-btn text medium" onclick="blogDetail(\'' + blog.blogId + '\')">' +
-                        blog.blogNm + '</a></td>';
-                    html += '<td class="text-center">' + blog.userNm + '</td>';
-                    html += '<td class="text-center">' + blog.frstRegistPnttm + '</td>';
-                    html += '<td class="text-center">' + blog.useAt + '</td>';
+                        '<a class="krds-btn text medium" onclick="blogDetail(\'' + escapeHtml(blog.blogId) + '\')">' +
+                        escapeHtml(blog.blogNm) + '</a></td>';
+                    html += '<td class="text-center">' + escapeHtml(blog.userNm) + '</td>';
+                    html += '<td class="text-center">' + escapeHtml(blog.frstRegistPnttm) + '</td>';
+                    html += '<td class="text-center">' + escapeHtml(blog.useAt) + '</td>';
                     html += '</tr>';
                 });
             } else {

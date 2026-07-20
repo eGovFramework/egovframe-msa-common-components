@@ -20,10 +20,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -121,7 +123,16 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
     }
 
     @Override
-    public QustnrRespondInfoDTO detail(QustnrRespondInfoVO qustnrRespondInfoVO) {
+    public QustnrRespondInfoDTO detail(QustnrRespondInfoVO qustnrRespondInfoVO, Map<String, String> userInfo) {
+        QustnrRespondInfoId qustnrRespondInfoId = new QustnrRespondInfoId();
+        qustnrRespondInfoId.setQustnrTmplatId(qustnrRespondInfoVO.getQustnrTmplatId());
+        qustnrRespondInfoId.setQestnrId(qustnrRespondInfoVO.getQestnrId());
+        qustnrRespondInfoId.setQustnrRespondId(qustnrRespondInfoVO.getQustnrRespondId());
+        QustnrRespondInfo respondent = repository.findById(qustnrRespondInfoId).orElse(null);
+        if (respondent == null) {
+            return null;
+        }
+        assertOwner(respondent.getFrstRegisterId(), userInfo);
 
         QQustnrRespondInfo qustnrRespondInfo = QQustnrRespondInfo.qustnrRespondInfo;
         QUserMaster userMaster = QUserMaster.userMaster;
@@ -185,14 +196,17 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
 
     @Transactional
     @Override
-    public QustnrRespondInfoVO update(QustnrRespondInfoVO qustnrRespondInfoVO) {
+    public QustnrRespondInfoVO update(QustnrRespondInfoVO qustnrRespondInfoVO, Map<String, String> userInfo) {
         QustnrRespondInfoId qustnrRespondInfoId = new QustnrRespondInfoId();
         qustnrRespondInfoId.setQustnrTmplatId(qustnrRespondInfoVO.getQustnrTmplatId());
         qustnrRespondInfoId.setQestnrId(qustnrRespondInfoVO.getQestnrId());
         qustnrRespondInfoId.setQustnrRespondId(qustnrRespondInfoVO.getQustnrRespondId());
 
         return repository.findById(qustnrRespondInfoId)
-                .map(item -> updateItem(item, qustnrRespondInfoVO))
+                .map(item -> {
+                    assertOwner(item.getFrstRegisterId(), userInfo);
+                    return updateItem(item, qustnrRespondInfoVO, userInfo.get("uniqId"));
+                })
                 .map(repository::save)
                 .map(EgovQustnrRespondInfoUtility::qustnrRespondInfoEntityToVO)
                 .orElse(null);
@@ -200,7 +214,7 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
 
     @Transactional
     @Override
-    public boolean delete(QustnrRespondInfoVO qustnrRespondInfoVO) {
+    public boolean delete(QustnrRespondInfoVO qustnrRespondInfoVO, Map<String, String> userInfo) {
         QustnrRespondInfoId qustnrRespondInfoId = new QustnrRespondInfoId();
         qustnrRespondInfoId.setQustnrTmplatId(qustnrRespondInfoVO.getQustnrTmplatId());
         qustnrRespondInfoId.setQestnrId(qustnrRespondInfoVO.getQestnrId());
@@ -208,19 +222,31 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
 
         return repository.findById(qustnrRespondInfoId)
                 .map(result -> {
+                    assertOwner(result.getFrstRegisterId(), userInfo);
                     repository.delete(result);
                     return true;
                 })
                 .orElse(false);
     }
 
-    private QustnrRespondInfo updateItem(QustnrRespondInfo qustnrRespondInfo, QustnrRespondInfoVO qustnrRespondInfoVO) {
+    private QustnrRespondInfo updateItem(QustnrRespondInfo qustnrRespondInfo, QustnrRespondInfoVO qustnrRespondInfoVO, String uniqId) {
         qustnrRespondInfo.setSexdstnCode(qustnrRespondInfoVO.getSexdstnCode());
         qustnrRespondInfo.setOccpTyCode(qustnrRespondInfoVO.getOccpTyCode());
         qustnrRespondInfo.setRespondNm(qustnrRespondInfoVO.getRespondNm());
         qustnrRespondInfo.setLastUpdtPnttm(LocalDateTime.now());
-        qustnrRespondInfo.setLastUpdusrId(qustnrRespondInfoVO.getLastUpdusrId());
+        qustnrRespondInfo.setLastUpdusrId(uniqId);
         return qustnrRespondInfo;
+    }
+
+    private void assertOwner(String frstRegisterId, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치
+        if (!Objects.equals(uniqId, frstRegisterId)) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
     }
 
     private JPAQuery<Tuple> qustnrRespondInfoQuery(){

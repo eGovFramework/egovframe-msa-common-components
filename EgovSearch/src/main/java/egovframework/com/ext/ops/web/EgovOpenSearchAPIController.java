@@ -26,7 +26,7 @@ public class EgovOpenSearchAPIController {
             description = "mysql 테이블과 연동되는 OpenSearch(text) 인덱스를 생성",
             tags = {"EgovOpenSearchAPIController"}
     )
-    @GetMapping("/createTextIndex")
+    @PostMapping("/createTextIndex")
     public ResponseEntity<?> createTextIndex() {
         Map<String, Object> response = new HashMap<>();
 
@@ -46,7 +46,7 @@ public class EgovOpenSearchAPIController {
             description = "mysql 테이블과 연동되는 OpenSearch(vector) 인덱스를 생성",
             tags = {"EgovOpenSearchAPIController"}
     )
-    @GetMapping("/createVectorIndex")
+    @PostMapping("/createVectorIndex")
     public ResponseEntity<?> createVectorIndex() {
         Map<String, Object> response = new HashMap<>();
 
@@ -66,7 +66,7 @@ public class EgovOpenSearchAPIController {
             description = "OpenSearch 인덱스(text)에 mySql 테이블의 데이터를 추가(벌크 insert)",
             tags = {"EgovOpenSearchAPIController"}
     )
-    @GetMapping("/insertTextData")
+    @PostMapping("/insertTextData")
     public ResponseEntity<?> insertTextData() {
         Map<String, Object> response = new HashMap<>();
 
@@ -82,7 +82,7 @@ public class EgovOpenSearchAPIController {
             description = "OpenSearch 인덱스(vector)에 mySql 테이블의 데이터를 추가(분할 insert)",
             tags = {"EgovOpenSearchAPIController"}
     )
-    @GetMapping("/insertVectorData")
+    @PostMapping("/insertVectorData")
     public ResponseEntity<?> insertVectorData() {
         Map<String, Object> response = new HashMap<>();
 
@@ -98,7 +98,7 @@ public class EgovOpenSearchAPIController {
             description = "OpenSearch 인덱스(vector) 삭제",
             tags = {"EgovOpenSearchAPIController"}
     )
-    @GetMapping("/deleteIndex/{indexName}")
+    @PostMapping("/deleteIndex/{indexName}")
     public ResponseEntity<?> deleteIndex(@PathVariable String indexName) {
         Map<String, Object> response = new HashMap<>();
 

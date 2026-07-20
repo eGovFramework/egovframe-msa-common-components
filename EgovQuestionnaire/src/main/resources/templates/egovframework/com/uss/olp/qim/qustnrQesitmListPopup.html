@@ -60,6 +60,11 @@
 <div id="qustnrQesitm-pagination-container" class="krds-pagination w-page"></div>
 
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('qustnrQesitmSearchCondition').addEventListener('change', function() {
             document.getElementById('qustnrQesitmSearchKeyword').value = '';
@@ -113,15 +118,15 @@
                     if (qustnrQesitm.qestnTyCode === '1') {
                         html += '<td class="text-center">'+
                             '<a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="qustnrQesitmSelect('+
-                            '\''+qustnrQesitm.qustnrQesitmId+'\',\''+qustnrQesitm.qestnCn+'\''+
-                            ')">'+qustnrQesitm.qestnCn+'</a></td>';
+                            '\''+escapeHtml(qustnrQesitm.qustnrQesitmId)+'\',\''+escapeHtml(qustnrQesitm.qestnCn)+'\''+
+                            ')">'+escapeHtml(qustnrQesitm.qestnCn)+'</a></td>';
                     } else {
                         html += '<td class="text-center">'+
-                            '<a class="krds-btn text small" onclick="qustnrQesitmSelectCancel()">'+qustnrQesitm.qestnCn+'</a></td>';
+                            '<a class="krds-btn text small" onclick="qustnrQesitmSelectCancel()">'+escapeHtml(qustnrQesitm.qestnCn)+'</a></td>';
                     }
                     html += '<td class="text-center">'+qestnTyCodeName+'</td>';
-                    html += '<td class="text-center">'+qustnrQesitm.userNm+'</td>';
-                    html += '<td class="text-center">'+qustnrQesitm.frstRegistPnttm+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrQesitm.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qustnrQesitm.frstRegistPnttm)+'</td>';
                     html += '</tr>';
                 });
             }

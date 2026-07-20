@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.NumberTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import egovframework.com.uss.olp.qri.entity.*;
+import egovframework.com.uss.olp.qri.repository.EgovQestnrInfoRepository;
 import egovframework.com.uss.olp.qri.repository.EgovQustnrRespondInfoRepository;
 import egovframework.com.uss.olp.qri.repository.EgovQustnrRspnsResultRepository;
 import egovframework.com.uss.olp.qri.service.*;
@@ -22,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +40,7 @@ public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl im
 
     private final EgovQustnrRspnsResultRepository repository;
     private final EgovQustnrRespondInfoRepository qustnrRespondInfoRepository;
+    private final EgovQestnrInfoRepository qestnrInfoRepository;
     private final EgovIdGnrService idgenService;
     private final EgovIdGnrService qustnrRespondInfoIdgenService;
     private final JPAQueryFactory queryFactory;
@@ -45,12 +48,14 @@ public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl im
     public EgovQustnrRspnsResultServiceImpl(
             EgovQustnrRspnsResultRepository repository,
             EgovQustnrRespondInfoRepository qustnrRespondInfoRepository,
+            EgovQestnrInfoRepository qestnrInfoRepository,
             @Qualifier("qustnrRespondInfoIdGnrService") EgovIdGnrService idgenService,
             @Qualifier("qustnrRespondManageIdGnrService") EgovIdGnrService qustnrRespondInfoIdgenService,
             JPAQueryFactory queryFactory
     ) {
         this.repository = repository;
         this.qustnrRespondInfoRepository = qustnrRespondInfoRepository;
+        this.qestnrInfoRepository = qestnrInfoRepository;
         this.idgenService = idgenService;
         this.qustnrRespondInfoIdgenService = qustnrRespondInfoIdgenService;
         this.queryFactory = queryFactory;
@@ -190,7 +195,8 @@ public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl im
     }
 
     @Override
-    public List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats(QustnrRspnsResultVO qustnrRspnsResultVO) {
+    public List<QustnrRspnsResultMCStatsDTO> qustnrRspnsResultMCStats(QustnrRspnsResultVO qustnrRspnsResultVO, Map<String, String> userInfo) {
+        assertQestnrOwner(qustnrRspnsResultVO.getQustnrTmplatId(), qustnrRspnsResultVO.getQestnrId(), userInfo);
 
         QQustnrIem qustnrIem = QQustnrIem.qustnrIem;
         QQustnrRspnsResult qustnrRspnsResult = QQustnrRspnsResult.qustnrRspnsResult;
@@ -246,7 +252,8 @@ public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl im
     }
 
     @Override
-    public List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats(QustnrRspnsResultVO qustnrRspnsResultVO) {
+    public List<QustnrRspnsResultESStatsDTO> qustnrRspnsResultESStats(QustnrRspnsResultVO qustnrRspnsResultVO, Map<String, String> userInfo) {
+        assertQestnrOwner(qustnrRspnsResultVO.getQustnrTmplatId(), qustnrRspnsResultVO.getQestnrId(), userInfo);
         QQustnrRspnsResult qustnrRspnsResult = QQustnrRspnsResult.qustnrRspnsResult;
 
         List<QustnrRspnsResult> results = queryFactory
@@ -269,6 +276,24 @@ public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl im
             );
         }).collect(Collectors.toList());
         return content;
+    }
+
+    private void assertQestnrOwner(String qustnrTmplatId, String qestnrId, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        QestnrInfoId qestnrInfoId = new QestnrInfoId();
+        qestnrInfoId.setQustnrTmplatId(qustnrTmplatId);
+        qestnrInfoId.setQestnrId(qestnrId);
+        QestnrInfo qestnrInfo = qestnrInfoRepository.findById(qestnrInfoId).orElse(null);
+        if (qestnrInfo == null) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치
+        if (!Objects.equals(uniqId, qestnrInfo.getFrstRegisterId())) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
     }
 
     private String formatDateString(String dateStr) {

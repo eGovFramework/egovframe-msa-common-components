@@ -4,6 +4,7 @@ import egovframework.com.cop.brd.service.BbsVO;
 import egovframework.com.cop.brd.service.BoardDTO;
 import egovframework.com.cop.brd.service.EgovBoardService;
 import egovframework.com.pagination.EgovKrdsPaginationRenderer;
+import egovframework.com.security.GatewayUserContextResolver;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ public class EgovBoardAPIController {
     private int pageSize;
 
     private final EgovBoardService service;
+    private final GatewayUserContextResolver gatewayUserContextResolver;
     private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
     private final EgovKrdsPaginationRenderer egovKrdsPaginationRenderer;
 
@@ -60,7 +62,7 @@ public class EgovBoardAPIController {
             bbsVO.setPageUnit(pageUnit - noticeCnt);
         }
 
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         Map<String, Object> response = service.list(bbsVO);
 
         PaginationInfo paginationInfo = new PaginationInfo();
@@ -80,7 +82,7 @@ public class EgovBoardAPIController {
 
     @PostMapping(value = "/boardDetail")
     public ResponseEntity<?> boardDetail(@ModelAttribute BbsVO bbsVO, HttpServletRequest request) {
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         BoardDTO result = service.detail(bbsVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
@@ -124,7 +126,7 @@ public class EgovBoardAPIController {
         List<MultipartFile> files = multiRequest.getFiles("fileList");
         log.debug("##### boardInsert >>> {}", files.size());
 
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         BbsVO result = service.insert(bbsVO, files, userInfo);
 
         Map<String, Object> response = new HashMap<>();
@@ -158,7 +160,7 @@ public class EgovBoardAPIController {
         List<MultipartFile> files = multiRequest.getFiles("fileList");
         log.debug("##### boardInsert >>> {}", files.size());
 
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
 
         // 첨부 없음·히든 미전송 시 빈 문자열이면 decrypt 시 ARIA 패딩 예외(ArrayIndexOutOfBoundsException) 발생
         if (StringUtils.isNotBlank(bbsVO.getAtchFileId())) {
@@ -194,7 +196,7 @@ public class EgovBoardAPIController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        Map<String, String> userInfo = extracted(request);
+        Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         try {
             service.delete(bbsVO, userInfo);
             return ResponseEntity.ok().body("게시글이 삭제되었습니다.");
@@ -219,19 +221,5 @@ public class EgovBoardAPIController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(msg);
         }
         throw e;
-    }
-
-    private Map<String, String> extracted(HttpServletRequest request) {
-        Map<String, String> userInfo = new HashMap<>();
-
-        String encryptUserId = request.getHeader("X-USER-ID");
-        String encryptUserNm = request.getHeader("X-USER-NM");
-        String encryptUniqId = request.getHeader("X-UNIQ-ID");
-
-        userInfo.put("userId", egovEnvCryptoService.decrypt(encryptUserId));
-        userInfo.put("userName", egovEnvCryptoService.decrypt(encryptUserNm));
-        userInfo.put("uniqId", egovEnvCryptoService.decrypt(encryptUniqId));
-
-        return userInfo;
     }
 }

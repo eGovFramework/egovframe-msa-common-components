@@ -255,10 +255,3 @@ management:
     web:
       exposure:
         include: health, info
-
-org:
-  egovframe:
-    crypto:
-      algorithm: SHA-256
-      algorithmKey: egovframe
-      algorithmKeyHash: gdyYs/IZqY86VcWhT8emCYfqY1ahw2vtLG+/FzNqtrQ=

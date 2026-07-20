@@ -61,6 +61,11 @@
 <div id="qestnrInfo-pagination-container" class="krds-pagination w-page"></div>
 
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         qestnrInfoList();
         document.getElementById('qestnrInfoSearchCondition').addEventListener('change', function() {
@@ -106,13 +111,13 @@
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+
                         '<a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="qestnrInfoSelect('+
-                        '\''+qestnrInfo.qustnrTmplatId+'\',\''+qestnrInfo.qestnrId+'\',\''+qestnrInfo.qustnrSj+'\''+
-                        ')">'+qestnrInfo.qustnrSj+
+                        '\''+escapeHtml(qestnrInfo.qustnrTmplatId)+'\',\''+escapeHtml(qestnrInfo.qestnrId)+'\',\''+escapeHtml(qestnrInfo.qustnrSj)+'\''+
+                        ')">'+escapeHtml(qestnrInfo.qustnrSj)+
                         '</a></td>';
-                    html += '<td class="text-center">'+qestnrInfo.qustnrPurps+'</td>';
-                    html += '<td class="text-center">'+qestnrInfo.qustnrBgnde+' ~ '+qestnrInfo.qustnrEndde+'</td>';
-                    html += '<td class="text-center">'+qestnrInfo.userNm+'</td>';
-                    html += '<td class="text-center">'+qestnrInfo.frstRegistPnttm+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qestnrInfo.qustnrPurps)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qestnrInfo.qustnrBgnde)+' ~ '+escapeHtml(qestnrInfo.qustnrEndde)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qestnrInfo.userNm)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(qestnrInfo.frstRegistPnttm)+'</td>';
                     html += '</tr>';
                 });
             }

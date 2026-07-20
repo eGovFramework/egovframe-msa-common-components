@@ -2,6 +2,8 @@ package egovframework.com.sec.gmt.service;
 
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
+
 public interface EgovAuthorGroupInfoService {
 
     Page<AuthorGroupInfoVO> list(AuthorGroupInfoVO authorGroupInfoVO);
@@ -12,6 +14,6 @@ public interface EgovAuthorGroupInfoService {
 
     AuthorGroupInfoVO update(AuthorGroupInfoVO authorGroupInfoVO);
 
-    boolean delete(AuthorGroupInfoVO authorGroupInfoVO);
+    boolean delete(AuthorGroupInfoVO authorGroupInfoVO, Map<String, String> userInfo);
 
 }

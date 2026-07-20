@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -127,7 +128,17 @@ public class EgovQustnrItemServiceImpl extends EgovAbstractServiceImpl implement
     }
 
     @Override
-    public QustnrIemDTO detail(QustnrIemVO qustnrIemVO) {
+    public QustnrIemDTO detail(QustnrIemVO qustnrIemVO, Map<String, String> userInfo) {
+        QustnrIemId qustnrIemId = new QustnrIemId();
+        qustnrIemId.setQustnrTmplatId(qustnrIemVO.getQustnrTmplatId());
+        qustnrIemId.setQestnrId(qustnrIemVO.getQestnrId());
+        qustnrIemId.setQustnrQesitmId(qustnrIemVO.getQustnrQesitmId());
+        qustnrIemId.setQustnrIemId(qustnrIemVO.getQustnrIemId());
+        QustnrIem item = repository.findById(qustnrIemId).orElse(null);
+        if (item == null) {
+            return null;
+        }
+        assertOwner(item.getFrstRegisterId(), userInfo);
 
         QQustnrIem qustnrIem = QQustnrIem.qustnrIem;
         QUserMaster userMaster = QUserMaster.userMaster;
@@ -204,7 +215,10 @@ public class EgovQustnrItemServiceImpl extends EgovAbstractServiceImpl implement
         qustnrIemId.setQustnrIemId(qustnrIemVO.getQustnrIemId());
 
         return repository.findById(qustnrIemId)
-                .map(existingItem -> updateExistingItem(existingItem, qustnrIemVO, userInfo.get("uniqId")))
+                .map(existingItem -> {
+                    assertOwner(existingItem.getFrstRegisterId(), userInfo);
+                    return updateExistingItem(existingItem, qustnrIemVO, userInfo.get("uniqId"));
+                })
                 .map(repository::save)
                 .map(EgovQusntrItemUtility::qustnrIemEntityToVO)
                 .orElse(null);
@@ -212,7 +226,7 @@ public class EgovQustnrItemServiceImpl extends EgovAbstractServiceImpl implement
 
     @Transactional
     @Override
-    public boolean delete(QustnrIemVO qustnrIemVO) {
+    public boolean delete(QustnrIemVO qustnrIemVO, Map<String, String> userInfo) {
         QustnrIemId qustnrIemId = new QustnrIemId();
         qustnrIemId.setQustnrTmplatId(qustnrIemVO.getQustnrTmplatId());
         qustnrIemId.setQestnrId(qustnrIemVO.getQestnrId());
@@ -221,10 +235,22 @@ public class EgovQustnrItemServiceImpl extends EgovAbstractServiceImpl implement
 
         return repository.findById(qustnrIemId)
                 .map(result -> {
+                    assertOwner(result.getFrstRegisterId(), userInfo);
                     repository.delete(result);
                     return true;
                 })
                 .orElse(false);
+    }
+
+    private void assertOwner(String frstRegisterId, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치
+        if (!Objects.equals(uniqId, frstRegisterId)) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
     }
 
     private QustnrIem updateExistingItem(QustnrIem existingItem, QustnrIemVO qustnrIemVO, String uniqId) {

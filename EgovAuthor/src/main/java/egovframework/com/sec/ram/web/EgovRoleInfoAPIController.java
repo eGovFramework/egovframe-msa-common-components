@@ -72,6 +72,13 @@ public class EgovRoleInfoAPIController {
         String[] strRoleCodes = roleCodes.split(";");
         String[] strRegYns = regYns.split(";");
 
+        if (strAuthorCodes.length != strRoleCodes.length || strAuthorCodes.length != strRegYns.length) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("status", "error");
+            errorResponse.put("message", "authorCodes, roleCodes, regYns must have the same number of elements.");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
         boolean result = false;
         for (int i = 0; i < strAuthorCodes.length; i++) {
             authorRoleRelatedVO.setAuthorCode(strAuthorCodes[i]);

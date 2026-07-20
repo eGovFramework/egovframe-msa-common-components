@@ -22,13 +22,8 @@ public class AuthorizeFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        if (!uri.startsWith("/mip/profile") && !uri.startsWith("/mip/vp")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        if (!gatewayInternalAuthVerifier.verify(request)) {
-            log.warn("##### Access Denied: invalid or missing gateway signature");
+        if (uri.startsWith("/mip/privacy") && !gatewayInternalAuthVerifier.verify(request)) {
+            log.warn("##### Access Denied: invalid or missing gateway signature for privacy API");
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             response.sendRedirect(request.getContextPath() + "/error/403.html");
             return;

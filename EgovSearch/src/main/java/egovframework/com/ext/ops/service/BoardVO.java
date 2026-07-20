@@ -1,5 +1,6 @@
 package egovframework.com.ext.ops.service;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,6 +49,7 @@ public class BoardVO extends EgovDefaultVO implements Serializable {
     private String ntcrNm;
 
     /** 패스워드 */
+    @JsonIgnore
     private String password;
 
     /** 게시물 첨부파일 아이디 */

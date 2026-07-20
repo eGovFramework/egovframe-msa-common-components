@@ -63,8 +63,9 @@ public class EgovQustnrItemAPIController {
     }
 
     @PostMapping(value="/qustnrItemDetail")
-    public ResponseEntity<?> qustnrItemDetail(@ModelAttribute QustnrIemVO qustnrIemVO) {
-        QustnrIemDTO result = service.detail(qustnrIemVO);
+    public ResponseEntity<?> qustnrItemDetail(@ModelAttribute QustnrIemVO qustnrIemVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        QustnrIemDTO result = service.detail(qustnrIemVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (!ObjectUtils.isEmpty(result)) {
@@ -130,8 +131,9 @@ public class EgovQustnrItemAPIController {
     }
 
     @PostMapping(value="/qustnrItemDelete")
-    public ResponseEntity<?> qustnrItemDelete(@ModelAttribute QustnrIemVO qustnrIemVO) {
-        boolean result = service.delete(qustnrIemVO);
+    public ResponseEntity<?> qustnrItemDelete(@ModelAttribute QustnrIemVO qustnrIemVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        boolean result = service.delete(qustnrIemVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (result) {

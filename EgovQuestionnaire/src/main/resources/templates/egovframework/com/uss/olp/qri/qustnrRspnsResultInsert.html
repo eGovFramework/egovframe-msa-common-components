@@ -85,6 +85,11 @@
     </form>
 </div>
 <script th:inline="javascript" defer>
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         cmmnDetailCodeList();
         qestnrInfoDetail();
@@ -289,8 +294,8 @@
             groupedData.forEach(function(item, index) {
                 const itemNum = index + 1;
                 html += '<div class="form-conts">';
-                html += '<h3 class="box-tit2" id="qustnrCn">'+itemNum+'. '+item.name+'</h3>';
-                html += '<input type="hidden" name="qestnTyCode" value="'+item.type+'">';
+                html += '<h3 class="box-tit2" id="qustnrCn">'+itemNum+'. '+escapeHtml(item.name)+'</h3>';
+                html += '<input type="hidden" name="qestnTyCode" value="'+escapeHtml(item.type)+'">';
                 qesitmItemList.forEach(function(iem, index2) {
                     const iemNum = index2 + 1;
                     if (item.id === iem.qustnrQesitmId) {
@@ -298,24 +303,24 @@
                             if (Number(iem.mxmmChoiseCo) === 1) {
                                 html += '<div class="krds-check-area">';
                                 html += '<div class="krds-form-check medium">';
-                                html += '<input type="radio" name="'+iem.qustnrQesitmId+'" id="rdo_'+iemNum+'" value="'+iem.qustnrIemId+
-                                    '" data-tyCode="'+iem.qestnTyCode+'" data-mxmmChoice="'+iem.mxmmChoiseCo+'">';
-                                html += '<label for="rdo_'+iemNum+'">'+iem.iemCn+'</label>';
+                                html += '<input type="radio" name="'+escapeHtml(iem.qustnrQesitmId)+'" id="rdo_'+iemNum+'" value="'+escapeHtml(iem.qustnrIemId)+
+                                    '" data-tyCode="'+escapeHtml(iem.qestnTyCode)+'" data-mxmmChoice="'+escapeHtml(iem.mxmmChoiseCo)+'">';
+                                html += '<label for="rdo_'+iemNum+'">'+escapeHtml(iem.iemCn)+'</label>';
                                 html += '</div>';
                                 html += '</div>';
                             } else {
                                 html += '<div class="krds-check-area">';
                                 html += '<div class="krds-form-check medium">';
-                                html += '<input type="checkbox" name="'+iem.qustnrQesitmId+'" id="chk_'+itemNum+'_'+iemNum+
-                                    '" value="'+iem.qustnrIemId+'" data-tyCode="'+iem.qestnTyCode+'" data-mxmmChoice="'+iem.mxmmChoiseCo+
-                                    '" onclick="checkboxAmount('+iem.qustnrQesitmId+','+iem.mxmmChoiseCo+')">';
-                                html += '<label for="chk_'+itemNum+'_'+iemNum+'">'+iem.iemCn+'</label>';
+                                html += '<input type="checkbox" name="'+escapeHtml(iem.qustnrQesitmId)+'" id="chk_'+itemNum+'_'+iemNum+
+                                    '" value="'+escapeHtml(iem.qustnrIemId)+'" data-tyCode="'+escapeHtml(iem.qestnTyCode)+'" data-mxmmChoice="'+escapeHtml(iem.mxmmChoiseCo)+
+                                    '" onclick="checkboxAmount('+Number(iem.qustnrQesitmId)+','+Number(iem.mxmmChoiseCo)+')">';
+                                html += '<label for="chk_'+itemNum+'_'+iemNum+'">'+escapeHtml(iem.iemCn)+'</label>';
                                 html += '</div>';
                                 html += '</div>';
                             }
                         } else {
                             html += '<div class="textarea-wrap">';
-                            html += '<textarea class="krds-input" name="'+iem.qustnrQesitmId+'" id="txt_'+itemNum+'" data-tyCode="2" data-mxmmChoice="1"></textarea>';
+                            html += '<textarea class="krds-input" name="'+escapeHtml(iem.qustnrQesitmId)+'" id="txt_'+itemNum+'" data-tyCode="2" data-mxmmChoice="1"></textarea>';
                             html += '</div>';
                         }
                     }

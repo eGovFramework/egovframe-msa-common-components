@@ -78,6 +78,11 @@
         }
     }
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function authorInfoList() {
         const listForm = document.getElementById('listForm');
         const formData = new FormData(listForm);
@@ -101,9 +106,9 @@
                     const number = lineNumber + (index + 1);
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
-                    html += '<td><a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="authorInfoDetail(\''+authorInfo.authorCode+'\')">'+
-                        authorInfo.authorCode+'</a></td>';
-                    html += '<td>'+authorInfo.authorNm+'</td>';
+                    html += '<td><a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="authorInfoDetail(\''+escapeHtml(authorInfo.authorCode)+'\')">'+
+                        escapeHtml(authorInfo.authorCode)+'</a></td>';
+                    html += '<td>'+escapeHtml(authorInfo.authorNm)+'</td>';
 
                     let authorDcValue;
                     if (authorInfo.authorDc === '' || authorInfo.authorDc == null) {
@@ -111,10 +116,10 @@
                     } else {
                         authorDcValue = authorInfo.authorDc.substring(0, 20)
                     }
-                    html += '<td>'+authorDcValue+'</td>';
-                    html += '<td class="text-center">'+authorInfo.authorCreatDe.substring(0, 10)+'</td>';
+                    html += '<td>'+escapeHtml(authorDcValue)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(authorInfo.authorCreatDe.substring(0, 10))+'</td>';
                     html += '<td class="text-center">'+
-                        '<button type="button" class="krds-btn medium" onclick="roleInfoList(\''+authorInfo.authorCode+'\')">'+
+                        '<button type="button" class="krds-btn medium" onclick="roleInfoList(\''+escapeHtml(authorInfo.authorCode)+'\')">'+
                         buttonText+'</button></td>';
                     html += '</tr>';
                 });

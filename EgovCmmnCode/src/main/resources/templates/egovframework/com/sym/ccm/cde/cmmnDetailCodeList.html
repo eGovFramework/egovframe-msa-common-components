@@ -82,6 +82,11 @@
         });
     });
 
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
     function cmmnDetailCodeSearch() {
         if (notNullCheck($('#searchKeyword').val())) {
             cmmnDetailCodeList();
@@ -108,13 +113,13 @@
                     let number = lineNumber + (index + 1);
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
-                    html += '<td class="text-center">'+cmmnDetatilCode.codeId+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(cmmnDetatilCode.codeId)+'</td>';
                     html += '<td class="text-center">'+
-                        '<a class="krds-btn text small" style="cursor:pointer" tabindex="0" '+
-                        'onclick="cmmnDetailCodeDetail(\''+cmmnDetatilCode.codeId+'\',\''+cmmnDetatilCode.code+'\')">'+
-                        cmmnDetatilCode.code+'</td>';
-                    html += '<td class="text-center">'+cmmnDetatilCode.codeNm+'</a></td>';
-                    html += '<td class="text-center">'+cmmnDetatilCode.useAt+'</td>';
+                        '<a class="krds-btn text small cmmnDetailCodeDetailLink" style="cursor:pointer" tabindex="0" '+
+                        'data-code-id="'+escapeHtml(cmmnDetatilCode.codeId)+'" data-code="'+escapeHtml(cmmnDetatilCode.code)+'">'+
+                        escapeHtml(cmmnDetatilCode.code)+'</td>';
+                    html += '<td class="text-center">'+escapeHtml(cmmnDetatilCode.codeNm)+'</a></td>';
+                    html += '<td class="text-center">'+escapeHtml(cmmnDetatilCode.useAt)+'</td>';
                     html += '</tr>';
                 });
             }
@@ -122,6 +127,10 @@
             $('#pagination-container').html(pagination);
         });
     }
+
+    $(document).on('click', '.cmmnDetailCodeDetailLink', function() {
+        cmmnDetailCodeDetail($(this).data('codeId'), $(this).data('code'));
+    });
 
     function linkPage(pageIndex) {
         $('#pageIndex').val(pageIndex);

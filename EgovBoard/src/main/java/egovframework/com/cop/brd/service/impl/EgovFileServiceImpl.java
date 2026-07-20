@@ -49,8 +49,13 @@ public class EgovFileServiceImpl extends EgovAbstractServiceImpl implements Egov
                 .collect(Collectors.toList());
     }
 
+    // 2026.07.13 KISA 보안취약점 조치: fileSn 산정(count) 시점과 저장 시점 사이의 TOCTOU 경쟁 조건으로
+    // 인해 동시 요청이 동일한 fileSn을 계산해 서로 덮어쓸 수 있는 문제를 방지하기 위해
+    // 메서드 전체를 동기화하고, 실제 저장 직전에 해당 PK(atchFileId+fileSn)가 이미 존재하는지 재확인하여
+    // 존재하면 사용 가능한 다음 순번을 찾을 때까지 재시도한다.
+    @Transactional
     @Override
-    public String insertFileInf(FileVO fvo) {
+    public synchronized String insertFileInf(FileVO fvo) {
         int fileCount = fileDetailRepository.findAllByFileDetailId_AtchFileId(fvo.getAtchFileId()).size();
 
         if (fileCount > 0) {
@@ -66,13 +71,25 @@ public class EgovFileServiceImpl extends EgovAbstractServiceImpl implements Egov
         file.setUseAt("Y");
         file.setCreatDt(LocalDateTime.now());
 
+        String candidateFileSn = fvo.getFileSn().isEmpty() ? "0" : fvo.getFileSn();
         FileDetailId filedetailId = new FileDetailId();
         filedetailId.setAtchFileId(fvo.getAtchFileId());
-        if (fvo.getFileSn().isEmpty()) {
-            filedetailId.setFileSn("0");
-        } else {
-            filedetailId.setFileSn(fvo.getFileSn());
+        filedetailId.setFileSn(candidateFileSn);
+
+        // 저장 직전 재확인: 계산된 fileSn이 이미 사용 중이면(경쟁 조건 발생) 사용 가능한 다음 값으로 재시도
+        int candidateSn;
+        try {
+            candidateSn = Integer.parseInt(candidateFileSn);
+        } catch (NumberFormatException e) {
+            candidateSn = 0;
         }
+        while (fileDetailRepository.findById(filedetailId).isPresent()) {
+            candidateSn++;
+            filedetailId = new FileDetailId();
+            filedetailId.setAtchFileId(fvo.getAtchFileId());
+            filedetailId.setFileSn(String.valueOf(candidateSn));
+        }
+        fvo.setFileSn(filedetailId.getFileSn());
         filedetail.setFileDetailId(filedetailId);
 
         file.setCreatDt(LocalDateTime.now());

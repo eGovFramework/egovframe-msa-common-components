@@ -20,6 +20,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -120,7 +121,16 @@ public class EgovQustnrQesitmServiceImpl extends EgovAbstractServiceImpl impleme
     }
 
     @Override
-    public QustnrQesitmDTO detail(QustnrQesitmVO qustnrQesitmVO) {
+    public QustnrQesitmDTO detail(QustnrQesitmVO qustnrQesitmVO, Map<String, String> userInfo) {
+        QustnrQesitmId qustnrQesitmId = new QustnrQesitmId();
+        qustnrQesitmId.setQustnrTmplatId(qustnrQesitmVO.getQustnrTmplatId());
+        qustnrQesitmId.setQestnrId(qustnrQesitmVO.getQestnrId());
+        qustnrQesitmId.setQustnrQesitmId(qustnrQesitmVO.getQustnrQesitmId());
+        QustnrQesitm question = repository.findById(qustnrQesitmId).orElse(null);
+        if (question == null) {
+            return null;
+        }
+        assertOwner(question.getFrstRegisterId(), userInfo);
 
         QQustnrQesitm qustnrQesitm = QQustnrQesitm.qustnrQesitm;
         QQestnrInfo qestnrInfo = QQestnrInfo.qestnrInfo;
@@ -186,7 +196,10 @@ public class EgovQustnrQesitmServiceImpl extends EgovAbstractServiceImpl impleme
         qustnrQesitmId.setQustnrQesitmId(qustnrQesitmVO.getQustnrQesitmId());
 
         return repository.findById(qustnrQesitmId)
-                .map(item -> updateItem(item, qustnrQesitmVO, userInfo.get("uniqId")))
+                .map(item -> {
+                    assertOwner(item.getFrstRegisterId(), userInfo);
+                    return updateItem(item, qustnrQesitmVO, userInfo.get("uniqId"));
+                })
                 .map(repository::save)
                 .map(EgovQustnrQesitmUtility::qustnrQesitmEntityToVO)
                 .orElse(null);
@@ -194,7 +207,7 @@ public class EgovQustnrQesitmServiceImpl extends EgovAbstractServiceImpl impleme
 
     @Transactional
     @Override
-    public boolean delete(QustnrQesitmVO qustnrQesitmVO) {
+    public boolean delete(QustnrQesitmVO qustnrQesitmVO, Map<String, String> userInfo) {
         QustnrQesitmId qustnrQesitmId = new QustnrQesitmId();
         qustnrQesitmId.setQustnrTmplatId(qustnrQesitmVO.getQustnrTmplatId());
         qustnrQesitmId.setQestnrId(qustnrQesitmVO.getQestnrId());
@@ -202,6 +215,7 @@ public class EgovQustnrQesitmServiceImpl extends EgovAbstractServiceImpl impleme
 
         return repository.findById(qustnrQesitmId)
                 .map(result -> {
+                    assertOwner(result.getFrstRegisterId(), userInfo);
                     repository.delete(result);
                     return true;
                 })
@@ -283,6 +297,17 @@ public class EgovQustnrQesitmServiceImpl extends EgovAbstractServiceImpl impleme
                 .leftJoin(cmmnDetailCode)
                 .on(qustnrQesitm.qestnTyCode.eq(cmmnDetailCode.cmmnDetailCodeId.code)
                         .and(cmmnDetailCode.cmmnDetailCodeId.codeId.eq("COM018")));
+    }
+
+    private void assertOwner(String frstRegisterId, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        // 2026.07.13 KISA 보안취약점 조치
+        if (!Objects.equals(uniqId, frstRegisterId)) {
+            throw new IllegalStateException("권한이 없습니다.");
+        }
     }
 
 }

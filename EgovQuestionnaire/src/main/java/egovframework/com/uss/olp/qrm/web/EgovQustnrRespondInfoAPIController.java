@@ -2,7 +2,9 @@ package egovframework.com.uss.olp.qrm.web;
 
 import egovframework.com.pagination.EgovKrdsPaginationRenderer;
 import egovframework.com.uss.olp.qrm.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.egovframe.boot.crypto.service.impl.EgovEnvCryptoServiceImpl;
 import org.egovframe.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -35,6 +37,7 @@ public class EgovQustnrRespondInfoAPIController {
     private final EgovQustnrRespondInfoService service;
     private final EgovCmmnDetailCodeService cmmnDetailCodeService;
     private final EgovKrdsPaginationRenderer egovKrdsPaginationRenderer;
+    private final EgovEnvCryptoServiceImpl egovEnvCryptoService;
 
     @PostMapping("/qustnrRespondInfoList")
     public ResponseEntity<?> qustnrRespondInfoList(@ModelAttribute QustnrRespondInfoVO qustnrRespondInfoVO) {
@@ -61,8 +64,9 @@ public class EgovQustnrRespondInfoAPIController {
     }
 
     @PostMapping(value="/qustnrRespondInfoDetail")
-    public ResponseEntity<?> qustnrRespondInfoDetail(@ModelAttribute QustnrRespondInfoVO qustnrRespondInfoVO) {
-        QustnrRespondInfoDTO result = service.detail(qustnrRespondInfoVO);
+    public ResponseEntity<?> qustnrRespondInfoDetail(@ModelAttribute QustnrRespondInfoVO qustnrRespondInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        QustnrRespondInfoDTO result = service.detail(qustnrRespondInfoVO,userInfo);
         List<CmmnDetailCodeVO> sexdstnList = cmmnDetailCodeService.list("COM014");
         List<CmmnDetailCodeVO> occpTyList = cmmnDetailCodeService.list("COM034");
 
@@ -114,7 +118,8 @@ public class EgovQustnrRespondInfoAPIController {
     public ResponseEntity<?> qustnrRespondInfoUpdate(
             @Valid @ModelAttribute QustnrRespondInfoVO qustnrRespondInfoVO,
             BindingResult bindingResult,
-            @RequestHeader("X-UNIQ-ID") String uniqId
+            @RequestHeader("X-UNIQ-ID") String uniqId,
+            HttpServletRequest request
     ) {
         if (bindingResult.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
@@ -128,7 +133,8 @@ public class EgovQustnrRespondInfoAPIController {
         }
 
         qustnrRespondInfoVO.setLastUpdusrId(uniqId);
-        QustnrRespondInfoVO result = service.update(qustnrRespondInfoVO);
+        Map<String, String> userInfo = extracted(request);
+        QustnrRespondInfoVO result = service.update(qustnrRespondInfoVO,userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (!ObjectUtils.isEmpty(result)) {
@@ -141,8 +147,9 @@ public class EgovQustnrRespondInfoAPIController {
     }
 
     @PostMapping(value="/qustnrRespondInfoDelete")
-    public ResponseEntity<?> qustnrRespondInfoDelete(@ModelAttribute QustnrRespondInfoVO qustnrRespondInfoVO) {
-        boolean result = service.delete(qustnrRespondInfoVO);
+    public ResponseEntity<?> qustnrRespondInfoDelete(@ModelAttribute QustnrRespondInfoVO qustnrRespondInfoVO, HttpServletRequest request) {
+        Map<String, String> userInfo = extracted(request);
+        boolean result = service.delete(qustnrRespondInfoVO, userInfo);
 
         Map<String, Object> response = new HashMap<>();
         if (result) {
@@ -152,6 +159,20 @@ public class EgovQustnrRespondInfoAPIController {
             response.put("status", "error");
             return ResponseEntity.ok(response);
         }
+    }
+
+    private Map<String, String> extracted(HttpServletRequest request) {
+        Map<String, String> userInfo = new HashMap<>();
+
+        String encryptUserId = request.getHeader("X-USER-ID");
+        String encryptUserNm = request.getHeader("X-USER-NM");
+        String encryptUniqId = request.getHeader("X-UNIQ-ID");
+
+        userInfo.put("userId", egovEnvCryptoService.decrypt(encryptUserId));
+        userInfo.put("userName", egovEnvCryptoService.decrypt(encryptUserNm));
+        userInfo.put("uniqId", egovEnvCryptoService.decrypt(encryptUniqId));
+
+        return userInfo;
     }
 
 }
