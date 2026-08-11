@@ -88,6 +88,7 @@
             method: 'post',
             data: $('#listForm').serialize()
         }).done(function(response) {
+            console.debug('response=', response);
             let loginPolicyList = response.loginPolicyList;
             let pagination = response.pagination;
             let lineNumber = response.lineNumber;
@@ -114,6 +115,14 @@
             }
             $('#loginPolicy-list-container').html(html);
             $('#pagination-container').html(pagination);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('jqXHR=', jqXHR);
+            console.error('textStatus=', textStatus);
+            console.error('errorThrown=', errorThrown);
+            alert('[(#{fail.common.msg})]');
+//             alert('[(#{fail.common.select})]');
+        }).always(function() {
+//             $("#loading").hide();
         });
     }
 

@@ -101,6 +101,7 @@
             method: 'post',
             data: $('#updateForm').serialize()
         }).done(function(response) {
+            console.debug('response=', response);
             if (response.status === 'error') {
                 alert('[(#{fail.request.msg})]');
                 loginPolicyList();
@@ -124,6 +125,14 @@
                     $('#regDate').val();
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('jqXHR=', jqXHR);
+            console.error('textStatus=', textStatus);
+            console.error('errorThrown=', errorThrown);
+            alert('[(#{fail.common.msg})]');
+//             alert('[(#{fail.common.select})]');
+        }).always(function() {
+//          $("#loading").hide();
         });
     }
 
@@ -135,6 +144,7 @@
                 method: 'post',
                 data: $('#updateForm').serialize()
             }).done(function(response) {
+                console.debug('response=', response);
                 if(response.status === 'valid') {
                     $.each(response.errors, function(key, value) {
                         $('#'+key+'Error').text(value);
@@ -146,6 +156,14 @@
                     alert('[(#{success.common.insert})]');
                     loginPolicyList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('jqXHR=', jqXHR);
+                console.error('textStatus=', textStatus);
+                console.error('errorThrown=', errorThrown);
+                alert('[(#{fail.common.msg})]');
+//                 alert('[(#{fail.common.insert})]');
+            }).always(function() {
+//              $("#loading").hide();
             });
         }
     }
@@ -158,6 +176,7 @@
                 method: 'post',
                 data: $('#updateForm').serialize()
             }).done(function(response) {
+                console.debug('response=', response);
                 if(response.status === 'valid') {
                     $.each(response.errors, function(key, value) {
                         $('#'+key+'Error').text(value);
@@ -169,6 +188,14 @@
                     alert('[(#{success.common.update})]');
                     loginPolicyList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('jqXHR=', jqXHR);
+                console.error('textStatus=', textStatus);
+                console.error('errorThrown=', errorThrown);
+                alert('[(#{fail.common.msg})]');
+//                 alert('[(#{fail.common.update})]');
+            }).always(function() {
+//              $("#loading").hide();
             });
         }
     }
@@ -180,6 +207,7 @@
                 method: 'post',
                 data: $('#updateForm').serialize()
             }).done(function(response) {
+                console.debug('response=', response);
                 if (response.status === 'error') {
                     alert('[(#{fail.common.delete})]');
                     loginPolicyList();
@@ -187,6 +215,14 @@
                     alert('[(#{success.common.delete})]');
                     loginPolicyList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('jqXHR=', jqXHR);
+                console.error('textStatus=', textStatus);
+                console.error('errorThrown=', errorThrown);
+                alert('[(#{fail.common.msg})]');
+//                 alert('[(#{fail.common.delete})]');
+            }).always(function() {
+//              $("#loading").hide();
             });
         }
     }
