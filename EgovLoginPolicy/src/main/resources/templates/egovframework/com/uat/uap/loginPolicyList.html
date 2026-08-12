@@ -90,14 +90,14 @@
         }).done(function(response) {
             let loginPolicyList = response.loginPolicyList;
             let pagination = response.pagination;
-            let lineNumber = response.lineNumber;
+            let paginationInfo = response.paginationInfo;
 
             let html = '';
             if(loginPolicyList.length === 0){
                 html = `<tr><td class="text-center" colspan="5">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 loginPolicyList.forEach(function(loginPolicy, index) {
-                    let number = lineNumber + (index + 1);
+                    let number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+
