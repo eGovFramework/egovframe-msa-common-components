@@ -153,7 +153,6 @@
             method: 'post',
             data: $('#listForm').serialize()
         }).done(function(response) {
-            console.debug('response=', response);
             $('#checkAll').prop('checked', false);
             let authorGroupList = response.authorGroupList;
             let authorInfoList = response.authorInfoList;
@@ -194,12 +193,8 @@
             $('#authorGroup-list-container').html(html);
             $('#pagination-container').html(pagination);
         }).fail(function(jqXHR, textStatus, errorThrown) {
-            console.error('jqXHR=', jqXHR);
-            console.error('textStatus=', textStatus);
-            console.error('errorThrown=', errorThrown);
+            console.error("Error details:", textStatus, errorThrown);
             alert('[(#{fail.common.msg})]');
-        }).always(function() {
-//             $("#loading").hide();
         });
     }
 
@@ -217,7 +212,6 @@
                 method: 'post',
                 data: $('#listForm').serialize()
             }).done(function(response) {
-                console.debug('response=', response);
                 if (response.status === 'error') {
                     alert('[(#{fail.common.insert})]');
                     authorGroupList();
@@ -226,12 +220,8 @@
                     authorGroupList();
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error('jqXHR=', jqXHR);
-                console.error('textStatus=', textStatus);
-                console.error('errorThrown=', errorThrown);
+                console.error("Error details:", textStatus, errorThrown);
                 alert('[(#{fail.common.msg})]');
-            }).always(function() {
-//                 $("#loading").hide();
             });
         }
     }
@@ -245,7 +235,6 @@
                 method: 'post',
                 data: $('#listForm').serialize()
             }).done(function(response) {
-                console.debug('response=', response);
                 if (response.status === 'error') {
                     alert('[(#{fail.common.delete})]');
                     authorGroupList();
@@ -254,12 +243,8 @@
                     authorGroupList();
                 }
             }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error('jqXHR=', jqXHR);
-                console.error('textStatus=', textStatus);
-                console.error('errorThrown=', errorThrown);
+                console.error("Error details:", textStatus, errorThrown);
                 alert('[(#{fail.common.msg})]');
-            }).always(function() {
-//                 $("#loading").hide();
             });
         }
     }
