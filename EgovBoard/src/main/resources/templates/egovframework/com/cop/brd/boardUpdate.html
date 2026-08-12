@@ -198,6 +198,9 @@
             }
             maxFiles = response.result.atchPosblFileNumber;
         }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error details:", textStatus, errorThrown);
+        alert('[(#{fail.common.msg})]');
     });
 
     // 제목 진하게 속성 이벤트 설정
@@ -416,6 +419,9 @@
                         });
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -454,6 +460,9 @@
                 data: delData
             }).done(function(result){
                 alert('성공')
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
 

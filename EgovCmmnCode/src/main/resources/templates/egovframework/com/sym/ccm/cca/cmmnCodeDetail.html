@@ -71,6 +71,9 @@
                 $('#codeIdDc').text(response.result.codeIdDc);
                 $('#useAt').text(response.result.useAt);
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -88,6 +91,9 @@
                     alert('[(#{success.common.delete})]');
                     cmmnCodeList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

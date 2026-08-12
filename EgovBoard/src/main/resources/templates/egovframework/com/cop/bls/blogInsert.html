@@ -103,6 +103,9 @@
                     alert('[(#{success.common.insert})]');
                     blogList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

@@ -116,6 +116,9 @@
                 }
                 $('#useAt').html(html);
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -138,6 +141,9 @@
                     alert('[(#{success.common.update})]');
                     cmmnClCodeList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

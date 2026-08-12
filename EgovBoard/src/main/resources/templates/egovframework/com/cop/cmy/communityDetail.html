@@ -74,6 +74,9 @@
                 let commuAdres = '/cop/cmy/communityBoardList?cmmntyId='+response.result.cmmntyId;
                 $('#commuAdres').html('<a href="#" onclick="communityBoardList()">'+commuAdres+'</a>');
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 

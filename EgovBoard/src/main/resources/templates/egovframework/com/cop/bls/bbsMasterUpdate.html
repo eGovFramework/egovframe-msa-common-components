@@ -296,6 +296,9 @@
                     }
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -321,6 +324,9 @@
                     alert('[(#{success.common.update})]');
                     bbsMasterList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

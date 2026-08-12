@@ -116,6 +116,9 @@
 
             $('#community-list-container').html(html);
             $('#pagination-container').html(pagination);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 

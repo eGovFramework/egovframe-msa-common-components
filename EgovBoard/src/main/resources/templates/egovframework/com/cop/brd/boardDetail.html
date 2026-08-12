@@ -125,6 +125,9 @@
                     document.querySelector("#replyBtn").disabled = false;
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -145,6 +148,9 @@
             frm.querySelector("#replyPosblAt").value = "N";
             document.querySelector("#replyBtn").disabled = true;
         }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error details:", textStatus, errorThrown);
+        alert('[(#{fail.common.msg})]');
     });
 
     /*********************************************************
@@ -234,6 +240,9 @@
             }
             document.querySelector(".comment-wrap").innerHTML += html;
             fn_comment_count();
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         })
     }
 
@@ -315,6 +324,9 @@
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 

@@ -219,6 +219,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             maxFiles = response.result.atchPosblFileNumber;
         }
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        console.error("Error details:", textStatus, errorThrown);
+        alert('[(#{fail.common.msg})]');
     });
 
     // Byte 단위 변경
@@ -382,6 +385,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     alert('[(#{success.common.insert})]');
                     boardList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

@@ -74,6 +74,9 @@
                 let blogAdres = '/cop/bls/blogBoardList?blogId='+response.result.blogId;
                 $('#blogAdres').html('<a href="#" onclick="blogBoardList()">'+blogAdres+'</a>');
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
