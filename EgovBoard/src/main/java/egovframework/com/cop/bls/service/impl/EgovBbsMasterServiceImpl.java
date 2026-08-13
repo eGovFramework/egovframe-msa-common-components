@@ -86,7 +86,7 @@ public class EgovBbsMasterServiceImpl extends EgovAbstractServiceImpl implements
                         .select(bbsMaster.count())
                         .from(bbsMaster)
                         .leftJoin(masterOptn)
-                        .on(bbsMaster.bbsId.eq(bbsMaster.bbsId))
+                        .on(bbsMaster.bbsId.eq(masterOptn.bbsId))
                         .leftJoin(tmplatInfo)
                         .on(bbsMaster.tmplatId.eq(tmplatInfo.tmplatId))
                         .leftJoin(userMaster)
