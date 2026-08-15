@@ -1,5 +1,6 @@
 package egovframework.com.mip.mva.sp.comm.util;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -27,7 +28,7 @@ public class Base64Util {
 	 * @return Base64 String
 	 */
 	public static String encode(String text) {
-		return Base64.getUrlEncoder().encodeToString(text.getBytes());
+		return Base64.getUrlEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
 	}
 
 	/**
@@ -49,7 +50,7 @@ public class Base64Util {
 	 * @return String
 	 */
 	public static String decode(String text) {
-		return new String(Base64.getUrlDecoder().decode(text));
+		return new String(Base64.getUrlDecoder().decode(text), StandardCharsets.UTF_8);
 	}
 
 	/**
