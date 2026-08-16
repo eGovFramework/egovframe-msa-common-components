@@ -299,7 +299,7 @@ public class VerifyManager implements InitializingBean {
 
 			String spProfileJson = VerifyApi.makeSpProfile(spProfileParam);
 
-			LOGGER.debug("spProfileJson : {}", spProfileJson);
+			LOGGER.debug("spProfileJson created (content omitted from log)");
 
 			resultProfile = new ResultProfile();
 
@@ -342,7 +342,7 @@ public class VerifyManager implements InitializingBean {
 
 			vcResult = VerifyApi.verify2(vcVerifyProfileParam, false);
 
-			LOGGER.debug("vcResult : {}", vcResult.toJson());
+			LOGGER.debug("vcResult received (content omitted from log)");
 		} catch (BlockChainException e) {
 			throw new SpException(MipErrorEnum.SP_SDK_ERROR, null, e.getErrorMsg());
 		} catch (HttpException e) {
@@ -374,7 +374,7 @@ public class VerifyManager implements InitializingBean {
 
 			vcResult = VerifyApi.checkUserProof(vcVerifyProfileParam, false);
 
-			LOGGER.debug("vcResult : {}", vcResult.toJson());
+			LOGGER.debug("vcResult received (content omitted from log)");
 		} catch (BlockChainException e) {
 			throw new SpException(MipErrorEnum.SP_SDK_ERROR, null, e.getErrorMsg());
 		} catch (HttpException e) {
@@ -454,7 +454,7 @@ public class VerifyManager implements InitializingBean {
 
 			String zkpProfileJson = VerifyApi.makeZkpProfile(spProfileParam);
 
-			LOGGER.debug("zkpProfileJson : {}", zkpProfileJson);
+			LOGGER.debug("zkpProfileJson created (content omitted from log)");
 
 			resultProfile = new ResultProfile();
 
@@ -491,7 +491,7 @@ public class VerifyManager implements InitializingBean {
 
 			String data = new String(vpDataByte);
 
-			LOGGER.debug("data : {}", data);
+			LOGGER.debug("proof data decrypted (content omitted from log)");
 
 			Proof proof = ConfigBean.gson.fromJson(data, Proof.class);
 
@@ -521,7 +521,7 @@ public class VerifyManager implements InitializingBean {
 			SDKResponse sDKResponse = new ZKPApi().verifyProof(iWApiBaseData, proof, proofRequest, proofVerifyParams,
 					verifierNonce);
 
-			LOGGER.debug("sDKResponse : {}", sDKResponse.toJson());
+			LOGGER.debug("sDKResponse received (content omitted from log)");
 
 			resultJson = new ResultJson();
 
@@ -684,7 +684,7 @@ public class VerifyManager implements InitializingBean {
 
 			SDKResponse response = new ZKPApi().createProofRequest(null, attributes, predicates, nonce);
 
-			LOGGER.debug("response : {}", response.toJson());
+			LOGGER.debug("proofRequest response received (content omitted from log)");
 
 			proofRequest = (ProofRequest) response.getResultData();
 			// proofRequest 생성 End
@@ -810,7 +810,7 @@ public class VerifyManager implements InitializingBean {
 
 			vpData = new String(decVp);
 
-			LOGGER.debug("vpData : {}", vpData);
+			LOGGER.debug("vpData decrypted (content omitted from log)");
 		} catch (IWException e) {
 			throw new SpException(MipErrorEnum.SP_SDK_ERROR, null, e.getErrorMsg());
 		} catch (Exception e) {
@@ -857,7 +857,7 @@ public class VerifyManager implements InitializingBean {
 			if (!ObjectUtils.isEmpty(vpNonce) && vpNonce.length() > ciLength) {
 				String info = new String(HexUtils.toBytes(vpNonce.substring(ciLength)));
 
-				LOGGER.debug("info : {}", info);
+				LOGGER.debug("privacy info parsed (content omitted from log)");
 
 				String ci = "";
 
@@ -892,7 +892,7 @@ public class VerifyManager implements InitializingBean {
 				}
 			}
 
-			LOGGER.debug("vcResult : {}", vcResult.toJson());
+			LOGGER.debug("vcResult received (content omitted from log)");
 		} catch (Exception e) {
 			throw new SpException(MipErrorEnum.UNKNOWN_ERROR, null, e.getMessage());
 		}
@@ -912,7 +912,7 @@ public class VerifyManager implements InitializingBean {
 		String encData;
 
 		try {
-			LOGGER.debug("data : {}", data);
+			LOGGER.debug("plain data received (content omitted from log)");
 
 			EosDataApi eosDataApi = new EosDataApi();
 
@@ -927,7 +927,7 @@ public class VerifyManager implements InitializingBean {
 
 			encData = Base64Util.encode(encByteData);
 
-			LOGGER.debug("encData : {}", encData);
+			LOGGER.debug("encData created (content omitted from log)");
 		} catch (BlockChainException | IWException e) {
 			throw new SpException(MipErrorEnum.SP_NETWORK_ERROR, null, e.getErrorMsg());
 		} catch (Exception e) {
@@ -948,14 +948,14 @@ public class VerifyManager implements InitializingBean {
 		String decData;
 
 		try {
-			LOGGER.debug("data : {}", data);
+			LOGGER.debug("encrypted data received (content omitted from log)");
 
 			byte[] encByteData = keyManager.rsaDecrypt(didWalletFile.getEncryptKeyId(), egovframework.com.mip.mva.sp.comm.util.Base64Util.decodeToByte(data),
 					AESType.AES256);
 
 			decData = new String(encByteData);
 
-			LOGGER.debug("decData : {}", decData);
+			LOGGER.debug("decData decrypted (content omitted from log)");
 		} catch (IWException e) {
 			throw new SpException(MipErrorEnum.UNKNOWN_ERROR, null, e.getErrorMsg());
 		} catch (Exception e) {
