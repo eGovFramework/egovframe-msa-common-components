@@ -39,7 +39,8 @@ public class EgovLoginManageServiceImpl extends EgovAbstractServiceImpl implemen
         String userId = loginVO.getUserId();
         String userSe = loginVO.getUserSe();
         String encPassword = encryptPassword(loginVO.getUserPw(), loginVO.getUserId());
-        log.debug("userId = {}, userSe = {}, encPassword = {}", userId, userSe, encPassword);
+        // encPassword(암호화된 비밀번호)는 로그로 남기지 않는다 (CWE-532).
+        log.debug("userId = {}, userSe = {}", userId, userSe);
 
         QGnrlMber gnrlMber = QGnrlMber.gnrlMber;
         QEntrprsMber entrprsMber = QEntrprsMber.entrprsMber;
