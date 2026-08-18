@@ -23,14 +23,25 @@ import java.util.Locale;
 public class Generator {
 
 	/**
-	 * 거래코드 생성 - 현재시간 yyyyMMddhhmmssSSS + 시큐어난수 (8자리)
-	 * 
+	 * 거래코드 생성 - 현재시간 yyyyMMddHHmmssSSS(24시간제) + 시큐어난수 (8자리)
+	 *
 	 * @MethodName genTrxcode
 	 * @return 거래코드
 	 */
 	public static String genTrxcode() {
-		Date today = new Date();
-		SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddhhmmssSSS", Locale.KOREA);
+		return genTrxcode(new Date());
+	}
+
+	/**
+	 * 거래코드 생성(기준 시각 주입 - 테스트용). 시(hour)는 24시간제(HH)로 표기한다.
+	 * 12시간제(hh)를 쓰면 오후 시각이 오전과 같은 시 값이 되어 거래코드의 시간 순서·해석이 어긋난다.
+	 *
+	 * @MethodName genTrxcode
+	 * @param today 기준 시각
+	 * @return 거래코드
+	 */
+	static String genTrxcode(Date today) {
+		SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmssSSS", Locale.KOREA);
 		String second = secRandom(4); // 4자리 생성하고 hex code로 표현되므로 8개 자리가 나옴
 
 		String first = formater.format(today);
@@ -41,13 +52,23 @@ public class Generator {
 
 	/**
 	 * Nonce 생성
-	 * 
+	 *
 	 * @MethodName genNonce
 	 * @return Nonce
 	 */
 	public static String genNonce() {
-		Date today = new Date();
-		SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddhhmmssSSSS", Locale.KOREA);
+		return genNonce(new Date());
+	}
+
+	/**
+	 * Nonce 생성(기준 시각 주입 - 테스트용). 시(hour)는 24시간제(HH)로 표기한다.
+	 *
+	 * @MethodName genNonce
+	 * @param today 기준 시각
+	 * @return Nonce
+	 */
+	static String genNonce(Date today) {
+		SimpleDateFormat formater = new SimpleDateFormat("yyyyMMddHHmmssSSSS", Locale.KOREA);
 
 		String first = formater.format(today);
 		String second = secRandom(11); // 16진수 11개 자릿수 -> 스트링 -> 바이트배열 22바이트 + 18바이트 = 40바이트
