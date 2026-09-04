@@ -172,14 +172,7 @@ public class EgovCommentAPIController {
 
     @Transactional
     @PostMapping("/deleteStsfdg")
-    public ResponseEntity<?> deleteStsfdg(@RequestBody StsfdgVO stsfdgVO, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
+    public ResponseEntity<?> deleteStsfdg(@RequestBody StsfdgVO stsfdgVO, HttpServletRequest request) {
         String stsfdgNo = stsfdgVO.getStsfdgNo() != null ? stsfdgVO.getStsfdgNo() : "";
         if (stsfdgNo.isEmpty()) {
             return ResponseEntity.badRequest().body("stsfdgNo is required");
