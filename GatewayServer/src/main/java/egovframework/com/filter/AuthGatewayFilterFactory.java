@@ -197,7 +197,7 @@ public class AuthGatewayFilterFactory extends AbstractGatewayFilterFactory<AuthG
     }
 
     private String getParamFromPath(String path) {
-        if (path.contains("/uat/uap") || path.contains("/mpi")) {
+        if (path.contains("/uat/uap") || path.contains("/mip")) {
             return "1";
         } else if (path.contains("/sec")) {
             return "2";
