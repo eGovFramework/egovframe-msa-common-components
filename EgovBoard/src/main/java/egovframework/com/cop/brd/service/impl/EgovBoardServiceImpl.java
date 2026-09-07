@@ -352,8 +352,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
             bbsVO.setLastUpdtPnttm(String.valueOf(LocalDateTime.now()));
             bbsVO.setLastUpdusrId(userInfo.get("uniqId"));
 
-            repository.save(EgovBoardUtility.bbsVOToEntity(bbsVO));
-
             bbsVO = EgovBoardUtility.bbsEntityToVO(repository.save(EgovBoardUtility.bbsVOToEntity(bbsVO)));
 
             syncLogProcess(bbsVO);
