@@ -69,7 +69,6 @@ public class EgovFileServiceImpl extends EgovAbstractServiceImpl implements Egov
 
         file.setAtchFileId(fvo.getAtchFileId());
         file.setUseAt("Y");
-        file.setCreatDt(LocalDateTime.now());
 
         String candidateFileSn = fvo.getFileSn().isEmpty() ? "0" : fvo.getFileSn();
         FileDetailId filedetailId = new FileDetailId();
