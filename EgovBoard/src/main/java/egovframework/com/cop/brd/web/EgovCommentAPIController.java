@@ -93,15 +93,7 @@ public class EgovCommentAPIController {
     }
 
     @PostMapping("/deleteComment")
-    public ResponseEntity<?> deleteComment(@Valid @RequestBody CommentVO commentVO, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    public ResponseEntity<?> deleteComment(@RequestBody CommentVO commentVO, HttpServletRequest request) {
         Map<String, String> userInfo = extracted(request);
         try {
             articleCommentService.deleteArticleComment(commentVO, userInfo);
