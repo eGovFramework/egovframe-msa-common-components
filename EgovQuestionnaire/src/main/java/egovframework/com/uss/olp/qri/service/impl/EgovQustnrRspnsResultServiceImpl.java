@@ -166,7 +166,7 @@ public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl im
             // 설문조사 저장
             String[] itemArray = qustnrRspnsResultVO.getQustnrItemList();
             for (String item : itemArray) {
-                String[] itemList = item.split(",");
+                String[] itemList = item.split(",", 3);
                 if ("1".equals(itemList[0])) {
                     qustnrRspnsResultVO.setQustnrRspnsResultId(idgenService.getNextStringId());
                     qustnrRspnsResultVO.setQustnrQesitmId(itemList[1]);
