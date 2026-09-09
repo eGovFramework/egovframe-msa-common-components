@@ -1,5 +1,6 @@
 package egovframework.com.uss.olp.qri.service;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +34,7 @@ public class QustnrRspnsResultVO extends EgovDefaultVO implements Serializable {
     @EgovNullCheck(message="{comUssOlpQri.regist.respondNm}{common.required.msg}")
     private String respondNm;
 
+    @NotEmpty(message="{comUssOlpQri.regist.qustnrIem}{common.required.msg}")
     private String[] qustnrItemList;
 
     private String frstRegistPnttm;
