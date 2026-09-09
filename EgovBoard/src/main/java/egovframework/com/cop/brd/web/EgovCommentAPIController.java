@@ -152,12 +152,10 @@ public class EgovCommentAPIController {
                 errors.put(error.getField(), error.getDefaultMessage());
             }
             return ResponseEntity.badRequest().body(errors);
-        } else {
-            if (stsfdgVO.getStsfdg() >= 0) {
-                Map<String, String> userInfo = extracted(request);
-                bbsStsfdgService.insertStsfdg(stsfdgVO, userInfo);
-            }
         }
+
+        Map<String, String> userInfo = extracted(request);
+        bbsStsfdgService.insertStsfdg(stsfdgVO, userInfo);
 
         return ResponseEntity.ok().body("등록이 완료되었습니다.");
     }
