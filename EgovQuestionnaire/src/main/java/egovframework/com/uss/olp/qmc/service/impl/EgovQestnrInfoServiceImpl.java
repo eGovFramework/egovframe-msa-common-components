@@ -221,12 +221,23 @@ public class EgovQestnrInfoServiceImpl extends EgovAbstractServiceImpl implement
     @Transactional
     @Override
     public QestnrInfoVO update(QestnrInfoVO qestnrInfoVO, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+        
         QestnrInfoId qestnrInfoId = new QestnrInfoId();
         qestnrInfoId.setQustnrTmplatId(qestnrInfoVO.getQustnrTmplatId());
         qestnrInfoId.setQestnrId(qestnrInfoVO.getQestnrId());
 
         return repository.findById(qestnrInfoId)
-                .map(item -> updateItem(item, qestnrInfoVO, userInfo.get("uniqId")))
+                .map(item -> {
+                    // 2026.08.20 KVE-2026-1926 보안취약점 조치 (IDOR)
+                    if (!Objects.equals(uniqId, item.getFrstRegisterId())) {
+                        throw new IllegalStateException("권한이 없습니다.");
+                    }
+                    return updateItem(item, qestnrInfoVO, uniqId);
+                })
                 .map(repository::save)
                 .map(EgovQestnrInfoUtility::quesnrInfoEntityToVO)
                 .orElse(null);
