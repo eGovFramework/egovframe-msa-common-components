@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -73,5 +74,24 @@ class EgovCommentAPIControllerTest {
         assertThat(comment.getNttId()).isEqualTo(1L);
         assertThat(comment.getAnswerNo()).isEqualTo(1L);
         assertThat(comment.getAnswer()).isNull();
+    }
+
+    @Test
+    void deleteStsfdgReturnsNotFoundWhenRowMissing() throws Exception {
+        when(cryptoService.decrypt(anyString())).thenReturn("test-user");
+        doThrow(new IllegalStateException("만족도를 찾을 수 없습니다."))
+                .when(stsfdgService).deleteStsfdg(anyString(), anyMap());
+
+        mockMvc.perform(post("/cop/brd/deleteStsfdg")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-USER-ID", "encrypted-user-id")
+                        .header("X-USER-NM", "encrypted-user-name")
+                        .header("X-UNIQ-ID", "encrypted-uniq-id")
+                        .content("""
+                                {
+                                  "stsfdgNo": "STSFDG_00000000999"
+                                }
+                                """))
+                .andExpect(status().isNotFound());
     }
 }
