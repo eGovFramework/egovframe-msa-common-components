@@ -176,6 +176,9 @@ public class EgovCommentAPIController {
             if ("인증 정보가 없습니다.".equals(msg)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(msg);
             }
+            if ("만족도를 찾을 수 없습니다.".equals(msg)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
+            }
             if (msg != null && msg.contains("권한")) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(msg);
             }

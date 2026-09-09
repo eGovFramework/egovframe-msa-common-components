@@ -95,7 +95,7 @@ public class EgovStsfdgServiceImpl extends EgovAbstractServiceImpl implements Eg
 
         Optional<Stsfdg> optionalStsfdg = egovStsfdgRepository.findById(stsfdgNo);
         if (optionalStsfdg.isEmpty()) {
-            return 0;
+            throw new IllegalStateException("만족도를 찾을 수 없습니다.");
         }
 
         Stsfdg stsfdg = optionalStsfdg.get();
