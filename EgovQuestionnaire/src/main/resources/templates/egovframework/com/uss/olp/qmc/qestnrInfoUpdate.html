@@ -177,8 +177,8 @@
                 });
                 document.getElementById('qustnrTrget').innerHTML = cmmnDetailCodeHtml;
 
-                document.getElementById('startDate').value = response.result.qustnrBgnde;
-                document.getElementById('endDate').value = response.result.qustnrEndde;
+                document.getElementById('startDate').value = response.result.qustnrBgnde.replaceAll('/', '-');
+                document.getElementById('endDate').value = response.result.qustnrEndde.replaceAll('/', '-');
 
                 let qustnrTmplatId = response.result.qustnrTmplatId;
                 let qustnrTmplatList = response.qustnrTmplatList;
