@@ -148,7 +148,7 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         } else if ("2".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
             where.and(bbs.nttCn.contains(searchKeyword));
         } else if ("3".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
-            where.and(userMaster.userNm.eq(searchKeyword));
+            where.and(userMaster.userNm.contains(searchKeyword));
         }
         where.and(bbs.useAt.eq("Y")).and(bbs.noticeAt.isNull());
 
@@ -570,7 +570,7 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         } else if ("2".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
             where.and(bbs.nttCn.contains(searchKeyword));
         } else if ("3".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
-            where.and(userMaster.userNm.eq(searchKeyword));
+            where.and(userMaster.userNm.contains(searchKeyword));
         }
 
         if(listNm.equals("notice")){
