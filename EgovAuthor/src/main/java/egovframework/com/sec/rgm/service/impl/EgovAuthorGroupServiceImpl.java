@@ -97,6 +97,7 @@ public class EgovAuthorGroupServiceImpl extends EgovAbstractServiceImpl implemen
                                 .and(code.cmmnDetailCodeId.codeId.eq("COM012"))
                                 .and(code.useAt.eq("Y"))
                 )
+                .where(where)
                 .fetchOne()
         ).orElse(0L);
 
