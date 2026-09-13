@@ -279,8 +279,8 @@ public class EgovQestnrInfoServiceImpl extends EgovAbstractServiceImpl implement
         qestnrInfo.setQustnrPurps(qestnrInfoVO.getQustnrPurps());
         qestnrInfo.setQustnrWritingGuidanceCn(qestnrInfoVO.getQustnrWritingGuidanceCn());
         qestnrInfo.setQustnrTrget(qestnrInfoVO.getQustnrTrget());
-        qestnrInfo.setQustnrBgnde(qestnrInfoVO.getQustnrBgnde());
-        qestnrInfo.setQustnrEndde(qestnrInfoVO.getQustnrEndde());
+        qestnrInfo.setQustnrBgnde(qestnrInfoVO.getQustnrBgnde().replace("-", ""));
+        qestnrInfo.setQustnrEndde(qestnrInfoVO.getQustnrEndde().replace("-", ""));
         qestnrInfo.setLastUpdtPnttm(LocalDateTime.now());
         qestnrInfo.setLastUpdusrId(uniqId);
         return qestnrInfo;
