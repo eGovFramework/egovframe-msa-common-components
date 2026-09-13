@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>egovframework</groupId>
     <artifactId>EgovMobileId</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.3</version>
     <name>EgovMobileId</name>
     <url>https://www.egovframe.go.kr</url>
 
@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.egovframe.boot</groupId>
         <artifactId>egovframe-boot-starter-parent</artifactId>
-        <version>5.0.0</version>
+        <version>5.0.1</version>
         <relativePath/>
     </parent>
 

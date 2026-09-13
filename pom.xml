@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>egovframework</groupId>
 	<artifactId>egovframe-msa-common-components</artifactId>
-	<version>5.0.0</version>
+	<version>5.0.3</version>
 	<packaging>pom</packaging>
 	<name>egovframe-msa-common-components</name>
 	<url>http://www.egovframe.go.kr</url>
