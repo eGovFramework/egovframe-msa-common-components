@@ -275,7 +275,7 @@
             var name;
             var type;
             var size;
-            var sn = 1;
+            var sn = null;
             if(item instanceof File){
                 name= item.name;
                 type= item.type.split('/')[1];
@@ -333,7 +333,7 @@
         document.getElementById(`file_${index}`).remove();
         document.querySelector(".current").textContent = fileList.length;
         fileAppend(fileList);
-        if(index != null){
+        if(sn != null){
             deleteFileSn.push(sn);
         }
     }
@@ -452,21 +452,8 @@
             deleteFileSn: deleteFileSn
         };
 
-        // 기존 저장되어 있는 파일 삭제
-        if (deleteFileSn.length !== 0) {
-            $.ajax({
-                url: '/cop/brd/deleteFileInfs',
-                method: 'POST',
-                data: delData
-            }).done(function(result){
-                alert('성공')
-            }).fail(function(jqXHR, textStatus, errorThrown) {
-                console.error("Error details:", textStatus, errorThrown);
-                alert('[(#{fail.common.msg})]');
-            });
-        }
-
         if (confirm('[(#{common.update.msg})]')) {
+            const updateBoard = function() {
             $('#nttSjError, #nttCnError').text('');
             $('#nttSjError, #nttSjError').css('display','none');
             $.ajax({
@@ -493,6 +480,20 @@
                 var msg = (raw && String(raw).trim()) ? String(raw).trim() : '[(#{fail.common.update})]';
                 alert(msg);
             });
+            };
+
+            if (deleteFileSn.length !== 0) {
+                $.ajax({
+                    url: '/cop/brd/deleteFileInfs',
+                    method: 'POST',
+                    data: delData
+                }).done(updateBoard).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.error("Error details:", textStatus, errorThrown);
+                    alert('[(#{fail.common.msg})]');
+                });
+            } else {
+                updateBoard();
+            }
         }
     }
 </script>

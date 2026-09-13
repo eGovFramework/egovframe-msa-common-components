@@ -121,15 +121,11 @@ public class EgovFileServiceImpl extends EgovAbstractServiceImpl implements Egov
 
     @Override
     public void deleteFileInfs(FileVO fileVO) {
-        if (ObjectUtils.isEmpty(fileVO.getDeleteFileSn()) || ObjectUtils.isEmpty(fileVO.getFileSn())) {
+        if (ObjectUtils.isEmpty(fileVO.getDeleteFileSn())) {
             return;
         }
 
         for (String num : fileVO.getDeleteFileSn()) {
-            // 토큰으로 검증된 단일 fileSn과 일치하는 값만 삭제한다.
-            if (!fileVO.getFileSn().equals(num)) {
-                continue;
-            }
             FileDetailId filedetailId = new FileDetailId();
             filedetailId.setAtchFileId(fileVO.getAtchFileId());
             filedetailId.setFileSn(num);
