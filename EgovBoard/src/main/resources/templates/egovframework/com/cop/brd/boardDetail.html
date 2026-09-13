@@ -116,7 +116,12 @@
                 $('#rdcnt').text(response.result.rdcnt);
                 const nttCnElement = document.getElementById('nttCn');
                 nttCnElement.textContent = response.result.nttCn != null ? response.result.nttCn : '';
-                $('#ntceDe').text(response.result.ntceBgnde+' ~ '+response.result.ntceEndde);
+                const ntceBgnde = response.result.ntceBgnde || '';
+                const ntceEndde = response.result.ntceEndde || '';
+                const ntceDe = ntceBgnde && ntceEndde
+                    ? ntceBgnde + ' ~ ' + ntceEndde
+                    : ntceBgnde || ntceEndde || '-';
+                $('#ntceDe').text(ntceDe);
                 renderArticleDetail(response);
                 // 공지사항인 경우 답글 비활성화
                 if (response.result.noticeAt === "Y") {
