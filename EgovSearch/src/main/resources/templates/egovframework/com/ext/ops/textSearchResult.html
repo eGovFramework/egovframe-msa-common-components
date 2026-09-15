@@ -20,7 +20,7 @@
 
     <div class="search_top_border">
         <ul class="search_info">
-            <li><span th:text="#{ScomExtOps.comQaOpsInfoVO.search.searchWord}">'</span><span class="keyword" th:text="${'`'+(BoardVO.searchWrd).split(',')[0]+'`'}"></span></li>
+            <li><span th:text="#{ScomExtOps.comQaOpsInfoVO.search.searchWord}">'</span><span class="keyword" th:text="${'`'+BoardVO.searchWrd+'`'}"></span></li>
             <li><span th:text="#{ScomExtOps.comQaOpsInfoVO.search.searchCount}"></span><span class="count">0</span><span th:text="#{ScomExtOps.comQaOpsInfoVO.search.searchCountText}"></span></li>
         </ul>
         <button class="krds-btn medium" th:text="#{comExtOps.comQaOpsInfoVO.search.title}" onclick="searchHome()"></button>
