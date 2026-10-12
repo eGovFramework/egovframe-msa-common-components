@@ -18,7 +18,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 public class EgovAuthorCommon {
 
     @Bean
-    public ReloadableResourceBundleMessageSource messageSource() {
+    ReloadableResourceBundleMessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
         messageSource.setBasenames(
                 "classpath:/messages/egovframework/com/message-common",
@@ -35,20 +35,20 @@ public class EgovAuthorCommon {
     }
 
     @Bean
-    public MessageSourceAccessor messageSourceAccessor() {
+    MessageSourceAccessor messageSourceAccessor() {
         return new MessageSourceAccessor(messageSource());
     }
 
     @Bean
-    public SessionLocaleResolver localeResolver() {
+    SessionLocaleResolver localeResolver() {
         return new SessionLocaleResolver();
     }
 
     @Bean
-    public EgovValidation egovValidation(Validator validator) { return new EgovValidation(validator); }
+    EgovValidation egovValidation(Validator validator) { return new EgovValidation(validator); }
 
     @Bean
-    public DefaultTraceHandleManager traceHandlerService() {
+    DefaultTraceHandleManager traceHandlerService() {
         DefaultTraceHandleManager defaultTraceHandleManager = new DefaultTraceHandleManager();
         defaultTraceHandleManager.setReqExpMatcher(antPathMatcher());
         defaultTraceHandleManager.setPatterns(new String[]{"*"});
@@ -57,19 +57,19 @@ public class EgovAuthorCommon {
     }
 
     @Bean
-    public LeaveaTrace leaveaTrace() {
+    LeaveaTrace leaveaTrace() {
         LeaveaTrace leaveaTrace = new LeaveaTrace();
         leaveaTrace.setTraceHandlerServices(new TraceHandlerService[]{traceHandlerService()});
         return leaveaTrace;
     }
 
     @Bean
-    public AntPathMatcher antPathMatcher() {
+    AntPathMatcher antPathMatcher() {
         return new AntPathMatcher();
     }
 
     @Bean
-    public DefaultTraceHandler defaultTraceHandler() {
+    DefaultTraceHandler defaultTraceHandler() {
         return new DefaultTraceHandler();
     }
 

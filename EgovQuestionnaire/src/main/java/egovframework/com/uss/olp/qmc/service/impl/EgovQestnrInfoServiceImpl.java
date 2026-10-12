@@ -225,7 +225,7 @@ public class EgovQestnrInfoServiceImpl extends EgovAbstractServiceImpl implement
         if (ObjectUtils.isEmpty(uniqId)) {
             throw new IllegalStateException("인증 정보가 없습니다.");
         }
-        
+
         QestnrInfoId qestnrInfoId = new QestnrInfoId();
         qestnrInfoId.setQustnrTmplatId(qestnrInfoVO.getQustnrTmplatId());
         qestnrInfoId.setQestnrId(qestnrInfoVO.getQestnrId());
@@ -279,8 +279,8 @@ public class EgovQestnrInfoServiceImpl extends EgovAbstractServiceImpl implement
         qestnrInfo.setQustnrPurps(qestnrInfoVO.getQustnrPurps());
         qestnrInfo.setQustnrWritingGuidanceCn(qestnrInfoVO.getQustnrWritingGuidanceCn());
         qestnrInfo.setQustnrTrget(qestnrInfoVO.getQustnrTrget());
-        qestnrInfo.setQustnrBgnde(qestnrInfoVO.getQustnrBgnde());
-        qestnrInfo.setQustnrEndde(qestnrInfoVO.getQustnrEndde());
+        qestnrInfo.setQustnrBgnde(qestnrInfoVO.getQustnrBgnde().replace("-", ""));
+        qestnrInfo.setQustnrEndde(qestnrInfoVO.getQustnrEndde().replace("-", ""));
         qestnrInfo.setLastUpdtPnttm(LocalDateTime.now());
         qestnrInfo.setLastUpdusrId(uniqId);
         return qestnrInfo;

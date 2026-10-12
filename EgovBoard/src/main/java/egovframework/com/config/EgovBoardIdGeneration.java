@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 public class EgovBoardIdGeneration {
 
     @Bean(name="bbsMstrStrategy")
-    public EgovIdGnrStrategyImpl bbsMstrStrategy() {
+    EgovIdGnrStrategyImpl bbsMstrStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("BBSMSTR_");
         egovIdGnrStrategyImpl.setCipers(12);
@@ -21,7 +21,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="egovBBSMstrIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovBBSMstrIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovBBSMstrIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(bbsMstrStrategy());
@@ -32,7 +32,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="blogIdStrategy")
-    public EgovIdGnrStrategyImpl blogIdStrategy() {
+    EgovIdGnrStrategyImpl blogIdStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("BLOG_");
         egovIdGnrStrategyImpl.setCipers(15);
@@ -41,7 +41,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="egovBlogIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovBlogIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovBlogIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(blogIdStrategy());
@@ -52,7 +52,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="cmmntyStrategy")
-    public EgovIdGnrStrategyImpl cmmntyStrategy() {
+    EgovIdGnrStrategyImpl cmmntyStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("CMMNTY_");
         egovIdGnrStrategyImpl.setCipers(13);
@@ -61,7 +61,7 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name="egovCmmntyIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovCmmntyIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovCmmntyIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(cmmntyStrategy());
@@ -72,14 +72,14 @@ public class EgovBoardIdGeneration {
     }
 
     @Bean(name = "nttIdStrategy")
-    public EgovIdGnrStrategyImpl nttIdStrategy() {
+    EgovIdGnrStrategyImpl nttIdStrategy() {
         EgovIdGnrStrategyImpl strategy = new EgovIdGnrStrategyImpl();
         strategy.setCipers(20);
         return strategy;
     }
 
     @Bean(name="egovBoardIdGnrService")
-    public EgovTableIdGnrServiceImpl egovNttIdGnrService(DataSource dataSource){
+    EgovTableIdGnrServiceImpl egovNttIdGnrService(DataSource dataSource){
         EgovTableIdGnrServiceImpl idGnrService = new EgovTableIdGnrServiceImpl();
         idGnrService.setDataSource(dataSource);
         idGnrService.setStrategy(nttIdStrategy());

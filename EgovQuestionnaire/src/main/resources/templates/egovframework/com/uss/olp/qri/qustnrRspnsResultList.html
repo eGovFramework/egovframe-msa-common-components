@@ -146,7 +146,7 @@
         .then(response => {
             const qustnrRspnsResultList = response.qustnrRspnsResultList;
             const pagination = response.pagination;
-            const lineNumber = response.lineNumber;
+            const paginationInfo = response.paginationInfo;
 
             let html = '';
             let buttonText = '[(#{comUssOlpQmc.value.view})]';
@@ -154,7 +154,7 @@
                 html = `<tr><td class="text-center" colspan="6">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 qustnrRspnsResultList.forEach(function(qustnrRspnsResult, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+

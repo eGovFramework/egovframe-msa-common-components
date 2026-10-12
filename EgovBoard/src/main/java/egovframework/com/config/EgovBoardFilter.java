@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class EgovBoardFilter {
 
     @Bean
-    public FilterRegistrationBean<EgovHtmlTagFilter> egovHtmlTagFilter() {
+    FilterRegistrationBean<EgovHtmlTagFilter> egovHtmlTagFilter() {
         FilterRegistrationBean<EgovHtmlTagFilter> registrationBean = new FilterRegistrationBean<>();
         registrationBean.setFilter(new EgovHtmlTagFilter());
         registrationBean.addUrlPatterns("/*");

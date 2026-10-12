@@ -56,7 +56,7 @@
                     <div class="form-conts">
                         <input type="text" id="ipInfo" name="ipInfo" class="krds-input" placeholder="IP 정보">
                     </div>
-                    <p class="ipInfoError" style="display:none"></p>
+                    <p class="ipInfoError" id="ipInfoError" style="display:none"></p>
                 </div>
                 <div class="form-group">
                     <div class="form-tit">
@@ -124,11 +124,14 @@
                     $('#regDate').val();
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
     function loginPolicyInsert() {
-        $('#ipInfoNmError').text('');
+        $('#ipInfoError').text('');
         if (confirm('[(#{common.save.msg})]')) {
             $.ajax({
                 url: '/uat/uap/loginPolicyInsert',
@@ -137,7 +140,7 @@
             }).done(function(response) {
                 if(response.status === 'valid') {
                     $.each(response.errors, function(key, value) {
-                        $('#'+key+'Error').text(value);
+                        $('#'+key+'Error').text(value).css('display', 'block');
                     });
                 } else if (response.status === 'error') {
                     alert('[(#{fail.common.insert})]');
@@ -146,12 +149,15 @@
                     alert('[(#{success.common.insert})]');
                     loginPolicyList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }
 
     function loginPolicyUpdate() {
-        $('#ipInfoNmError').text('');
+        $('#ipInfoError').text('');
         if (confirm('[(#{common.update.msg})]')) {
             $.ajax({
                 url: '/uat/uap/loginPolicyUpdate',
@@ -160,7 +166,7 @@
             }).done(function(response) {
                 if(response.status === 'valid') {
                     $.each(response.errors, function(key, value) {
-                        $('#'+key+'Error').text(value);
+                        $('#'+key+'Error').text(value).css('display', 'block');
                     });
                 } else if (response.status === 'error') {
                     alert('[(#{fail.common.update})]');
@@ -169,6 +175,9 @@
                     alert('[(#{success.common.update})]');
                     loginPolicyList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }
@@ -187,6 +196,9 @@
                     alert('[(#{success.common.delete})]');
                     loginPolicyList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

@@ -90,7 +90,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         QBbs bbs = QBbs.bbs;
         QUserMaster userMaster = QUserMaster.userMaster;
         QBbsMaster bbsMaster = QBbsMaster.bbsMaster;
-        QComment comment = QComment.comment;
 
         List<Tuple> results = boardListQuery(bbsVO,"notice").fetch();
 
@@ -99,7 +98,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
             Bbs b = tuple.get(bbs);
             UserMaster user =tuple.get(userMaster);
             BbsMaster bm = tuple.get(bbsMaster);
-            Comment c = tuple.get(comment);
 
             String userNm = (user != null && user.getUserNm() != null) ? user.getUserNm() : b.getNtcrNm();
             String bbsNm = bm != null && bm.getBbsNm() != null ? bm.getBbsNm() : "";
@@ -143,7 +141,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         QBbs bbs = QBbs.bbs;
         QUserMaster userMaster = QUserMaster.userMaster;
         QBbsMaster bbsMaster = QBbsMaster.bbsMaster;
-        QComment comment = QComment.comment;
 
         BooleanBuilder where = new BooleanBuilder();
         if ("1".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
@@ -151,7 +148,7 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         } else if ("2".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
             where.and(bbs.nttCn.contains(searchKeyword));
         } else if ("3".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
-            where.and(userMaster.userNm.eq(searchKeyword));
+            where.and(userMaster.userNm.contains(searchKeyword));
         }
         where.and(bbs.useAt.eq("Y")).and(bbs.noticeAt.isNull());
 
@@ -167,9 +164,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
                         .on(bbs.frstRegisterId.eq(userMaster.esntlId))
                         .leftJoin(bbsMaster)
                         .on(bbs.bbsId.bbsId.eq(bbsMaster.bbsId))
-                        .leftJoin(comment)
-                        .on(bbs.bbsId.nttId.eq(comment.commentId.nttId)
-                                .and(bbs.bbsId.bbsId.eq(comment.commentId.bbsId)))
                         .where(bbs.bbsId.bbsId.eq(bbsVO.getBbsId())
                                 .and(bbs.useAt.eq("Y")).and(bbs.noticeAt.isNull())
                                 .and(where))
@@ -181,7 +175,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
             Bbs b = tuple.get(bbs);
             UserMaster user =tuple.get(userMaster);
             BbsMaster bm = tuple.get(bbsMaster);
-            Comment c = tuple.get(comment);
 
             String userNm = (user != null && user.getUserNm() != null) ? user.getUserNm() : b.getNtcrNm();
             String bbsNm = bm != null && bm.getBbsNm() != null ? bm.getBbsNm() : "";
@@ -351,8 +344,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
 
             bbsVO.setLastUpdtPnttm(String.valueOf(LocalDateTime.now()));
             bbsVO.setLastUpdusrId(userInfo.get("uniqId"));
-
-            repository.save(EgovBoardUtility.bbsVOToEntity(bbsVO));
 
             bbsVO = EgovBoardUtility.bbsEntityToVO(repository.save(EgovBoardUtility.bbsVOToEntity(bbsVO)));
 
@@ -572,7 +563,6 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         QBbs bbs = QBbs.bbs;
         QUserMaster userMaster = QUserMaster.userMaster;
         QBbsMaster bbsMaster = QBbsMaster.bbsMaster;
-        QComment comment = QComment.comment;
 
         BooleanBuilder where = new BooleanBuilder();
         if ("1".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
@@ -580,7 +570,7 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         } else if ("2".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
             where.and(bbs.nttCn.contains(searchKeyword));
         } else if ("3".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
-            where.and(userMaster.userNm.eq(searchKeyword));
+            where.and(userMaster.userNm.contains(searchKeyword));
         }
 
         if(listNm.equals("notice")){
@@ -590,15 +580,12 @@ public class EgovBoardServiceImpl extends EgovAbstractServiceImpl implements Ego
         }
 
         return queryFactory
-                .select(bbs, userMaster, bbsMaster, comment)
+                .select(bbs, userMaster, bbsMaster)
                 .from(bbs)
                 .leftJoin(userMaster)
                 .on(bbs.frstRegisterId.eq(userMaster.esntlId))
                 .leftJoin(bbsMaster)
                 .on(bbs.bbsId.bbsId.eq(bbsMaster.bbsId))
-                .leftJoin(comment)
-                .on(bbs.bbsId.nttId.eq(comment.commentId.nttId)
-                        .and(bbs.bbsId.bbsId.eq(comment.commentId.bbsId)))
                 .where(bbs.bbsId.bbsId.eq(bbsVO.getBbsId())
                         .and(where))
                 .orderBy(bbs.sortOrdr.desc(), bbs.parntscttNo.asc(), bbs.answerLc.asc(), bbs.nttNo.asc(), bbs.frstRegistPnttm.desc());

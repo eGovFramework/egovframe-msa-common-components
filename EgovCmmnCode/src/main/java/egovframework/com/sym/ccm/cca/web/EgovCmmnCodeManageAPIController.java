@@ -56,7 +56,7 @@ public class EgovCmmnCodeManageAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("cmmnCodeList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (cmmnCodeVO.getPageIndex() - 1) * pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

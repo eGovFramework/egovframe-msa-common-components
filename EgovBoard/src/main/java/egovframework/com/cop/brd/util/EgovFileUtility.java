@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -113,7 +114,9 @@ public class EgovFileUtility {
         if (dot < 0 || dot == fileName.length() - 1) {
             return false;
         }
-        String extension = fileName.substring(dot + 1).toLowerCase();
+        // 로케일 독립: 터키어 등 일부 로케일에서 대소문자 규칙 차이로
+        // 허용 확장자(예: GIF) 비교가 어긋나 정상 파일이 거부되는 문제 방지
+        String extension = fileName.substring(dot + 1).toLowerCase(Locale.ROOT);
         return Arrays.asList(allowedExtensions.split(",")).contains(extension);
     }
 

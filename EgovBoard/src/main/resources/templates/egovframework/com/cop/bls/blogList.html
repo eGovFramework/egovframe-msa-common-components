@@ -12,7 +12,7 @@
     <nav class="krds-breadcrumb-wrap" aria-label="브레드크럼" id="breadcrumb">
         <ol class="breadcrumb">
             <li class="home"><a href="/" class="txt">홈</a></li>
-            <li>협업</li>
+            <li th:text="#{comCmm.cop.title}">협업</li>
         </ol>
     </nav>
 
@@ -89,12 +89,12 @@
         }).done(function(response) {
             let blogList = response.blogList;
             let pagination = response.pagination;
-            let lineNumber = response.lineNumber;
+            let paginationInfo = response.paginationInfo;
 
             let html = '';
             if (blogList.length > 0) {
                 blogList.forEach(function (blog, index) {
-                    let number = lineNumber + (index + 1);
+                    let number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">' + number + '</td>';
                     html += '<td class="text-center">' +
@@ -112,6 +112,9 @@
 
             $('#blog-list-container').html(html);
             $('#pagination-container').html(pagination);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 

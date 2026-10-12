@@ -42,7 +42,7 @@
                             <div class="file-upload-btn-wrap">
                                 <input type="file" name="qustnrTmplatImageInfo" id="fileUpload" accept="image/*" hidden>
                                 <label for="fileUpload" class="krds-btn medium">
-                                    <button  th:text="#{input.cSelect}"><i class="svg-icon ico-upload"></i></button>
+                                    <button type="button" th:text="#{input.cSelect}"><i class="svg-icon ico-upload"></i></button>
                                 </label>
                             </div>
                         </div>
@@ -134,6 +134,7 @@
 
         function handleFile(files) {
             errorElement.textContent = '';
+            errorElement.style.display = 'none';
             fileUploadList.innerHTML = '';
             stateElement.value = '';
 
@@ -144,11 +145,13 @@
 
                 if (!validTypes.includes(file.type)) {
                     errorElement.textContent = '[(#{errors.file.extension})]';
+                    errorElement.style.display = 'block';
                     return;
                 }
 
                 if (file.size > maxSize) {
-                    errorElement.textContent = 'File size exceeds the limit of 50MB.';
+                    errorElement.textContent = 'File size exceeds the limit of 50KB.';
+                    errorElement.style.display = 'block';
                     return;
                 }
 
@@ -190,7 +193,9 @@
             } else {
                 document.getElementById('qustnrTmplatTy').value = response.result.qustnrTmplatTy;
                 document.getElementById('qustnrTmplatImageState').value = 'update';
-                document.getElementById('qustnrTmplatDc').textContent = response.result.qustnrTmplatDc;
+                const qustnrTmplatDc = document.getElementById('qustnrTmplatDc');
+                qustnrTmplatDc.value = response.result.qustnrTmplatDc;
+                document.getElementById('textCount').textContent = qustnrTmplatDc.value.length;
                 document.getElementById('qustnrTmplatPathNm').value = response.result.qustnrTmplatPathNm;
             }
         });

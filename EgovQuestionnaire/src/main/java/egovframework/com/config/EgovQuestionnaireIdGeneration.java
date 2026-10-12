@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 public class EgovQuestionnaireIdGeneration {
 
     @Bean(name="qustnrItemManageInfotrategy")
-    public EgovIdGnrStrategyImpl qustnrItemManageInfotrategy() {
+    EgovIdGnrStrategyImpl qustnrItemManageInfotrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("QESITM_");
         egovIdGnrStrategyImpl.setCipers(13);
@@ -20,7 +20,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="egovQustnrItemManageIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovQustnrItemManageIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovQustnrItemManageIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(qustnrItemManageInfotrategy());
@@ -31,7 +31,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrManageInfotrategy")
-    public EgovIdGnrStrategyImpl qustnrManageInfotrategy() {
+    EgovIdGnrStrategyImpl qustnrManageInfotrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("QMANAGE_");
         egovIdGnrStrategyImpl.setCipers(12);
@@ -40,7 +40,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="egovQustnrManageIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovQustnrManageIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovQustnrManageIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(qustnrManageInfotrategy());
@@ -51,7 +51,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrQestnManageInfotrategy")
-    public EgovIdGnrStrategyImpl qustnrQestnManageInfotrategy() {
+    EgovIdGnrStrategyImpl qustnrQestnManageInfotrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("QQESTN_");
         egovIdGnrStrategyImpl.setCipers(13);
@@ -60,7 +60,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="egovQustnrQestnManageIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovQustnrQestnManageIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovQustnrQestnManageIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(qustnrQestnManageInfotrategy());
@@ -71,7 +71,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrRespondInfotrategy")
-    public EgovIdGnrStrategyImpl qustnrRespondInfotrategy() {
+    EgovIdGnrStrategyImpl qustnrRespondInfotrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("QRSPNS_");
         egovIdGnrStrategyImpl.setCipers(13);
@@ -80,7 +80,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrRespondInfoIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl qustnrRespondInfoIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl qustnrRespondInfoIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(qustnrRespondInfotrategy());
@@ -91,7 +91,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrRespondManageInfotrategy")
-    public EgovIdGnrStrategyImpl qustnrRespondManageInfotrategy() {
+    EgovIdGnrStrategyImpl qustnrRespondManageInfotrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("QRPD_");
         egovIdGnrStrategyImpl.setCipers(15);
@@ -100,7 +100,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrRespondManageIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl qustnrRespondManageIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl qustnrRespondManageIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(qustnrRespondManageInfotrategy());
@@ -111,7 +111,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="qustnrTmplatManageInfotrategy")
-    public EgovIdGnrStrategyImpl qustnrTmplatManageInfotrategy() {
+    EgovIdGnrStrategyImpl qustnrTmplatManageInfotrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("QTMPLA_");
         egovIdGnrStrategyImpl.setCipers(13);
@@ -120,7 +120,7 @@ public class EgovQuestionnaireIdGeneration {
     }
 
     @Bean(name="egovQustnrTmplatManageIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovQustnrTmplatManageIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovQustnrTmplatManageIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(qustnrTmplatManageInfotrategy());

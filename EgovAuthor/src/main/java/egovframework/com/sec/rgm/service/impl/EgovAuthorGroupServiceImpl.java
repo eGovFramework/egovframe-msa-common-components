@@ -97,6 +97,7 @@ public class EgovAuthorGroupServiceImpl extends EgovAbstractServiceImpl implemen
                                 .and(code.cmmnDetailCodeId.codeId.eq("COM012"))
                                 .and(code.useAt.eq("Y"))
                 )
+                .where(where)
                 .fetchOne()
         ).orElse(0L);
 
@@ -165,6 +166,31 @@ public class EgovAuthorGroupServiceImpl extends EgovAbstractServiceImpl implemen
         requireAuthenticated(userInfo);
         String scrtyDtrmnTrgetId = authorGroupVO.getScrtyDtrmnTrgetId();
         repository.deleteById(scrtyDtrmnTrgetId);
+    }
+
+    @Transactional
+    @Override
+    public void insertOrUpdateList(String[] userIds, String[] mberTyCodes, String[] authorCodes, String[] regYns, AuthorGroupVO authorGroupVO) {
+        for (int i = 0; i < userIds.length; i++) {
+            authorGroupVO.setScrtyDtrmnTrgetId(userIds[i]);
+            authorGroupVO.setMberTyCode(mberTyCodes[i]);
+            authorGroupVO.setAuthorCode(authorCodes[i]);
+
+            if ("N".equals(regYns[i])) {
+                this.insert(authorGroupVO);
+            } else {
+                this.update(authorGroupVO);
+            }
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteList(String[] userIds, AuthorGroupVO authorGroupVO, Map<String, String> userInfo) {
+        for (String userId : userIds) {
+            authorGroupVO.setScrtyDtrmnTrgetId(userId);
+            this.delete(authorGroupVO, userInfo);
+        }
     }
 
     private void requireAuthenticated(Map<String, String> userInfo) {

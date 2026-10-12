@@ -17,4 +17,8 @@ public interface EgovAuthorGroupService {
 
     void delete(AuthorGroupVO authorGroupVO, Map<String, String> userInfo);
 
+    void insertOrUpdateList(String[] userIds, String[] mberTyCodes, String[] authorCodes, String[] regYns, AuthorGroupVO authorGroupVO);
+
+    void deleteList(String[] userIds, AuthorGroupVO authorGroupVO, Map<String, String> userInfo);
+
 }

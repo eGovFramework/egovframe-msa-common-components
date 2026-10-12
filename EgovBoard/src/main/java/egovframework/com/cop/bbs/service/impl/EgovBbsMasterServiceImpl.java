@@ -216,7 +216,7 @@ public class EgovBbsMasterServiceImpl extends EgovAbstractServiceImpl implements
     @Override
     public BbsMasterVO insert(BbsMasterVO bbsMasterVO, Map<String, String> userInfo) {
         try {
-            String bbsId = idgenService.getNextStringId() + RandomStringUtils.randomAlphabetic(10);
+            String bbsId = idgenService.getNextStringId() + RandomStringUtils.secure().nextAlphabetic(10);
 
             BbsMasterOptnVO bbsMasterOptnVO = getBbsMasterOptnVO(bbsMasterVO, bbsId, userInfo.get("uniqId"));
             if (!"1".equals(bbsMasterVO.getBbsOption())) {

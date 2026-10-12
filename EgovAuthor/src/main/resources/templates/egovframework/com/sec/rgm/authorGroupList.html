@@ -192,6 +192,9 @@
             }
             $('#authorGroup-list-container').html(html);
             $('#pagination-container').html(pagination);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -216,6 +219,9 @@
                     alert('[(#{success.common.insert})]');
                     authorGroupList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }
@@ -236,6 +242,9 @@
                     alert('[(#{success.common.delete})]');
                     authorGroupList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

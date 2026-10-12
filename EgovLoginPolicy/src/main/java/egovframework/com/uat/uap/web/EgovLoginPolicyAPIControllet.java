@@ -57,7 +57,7 @@ public class EgovLoginPolicyAPIControllet {
         Map<String, Object> response = new HashMap<>();
         response.put("loginPolicyList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (loginPolicyVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

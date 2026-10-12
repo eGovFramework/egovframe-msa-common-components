@@ -95,7 +95,7 @@
         .then(response => {
             const authorInfoList = response.authorInfoList;
             const pagination = response.pagination;
-            const lineNumber = response.lineNumber;
+            const paginationInfo = response.paginationInfo;
 
             let html = '';
             let buttonText = '[(#{comCopSecRam.list.authorRoll})]';
@@ -103,7 +103,7 @@
                 html = `<tr><td class="text-center" colspan="6">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 authorInfoList.forEach(function(authorInfo, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td><a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="authorInfoDetail(\''+escapeHtml(authorInfo.authorCode)+'\')">'+

@@ -59,7 +59,7 @@ public class EgovQustnrRspnsResultAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("qustnrRspnsResultList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (qustnrRspnsResultVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

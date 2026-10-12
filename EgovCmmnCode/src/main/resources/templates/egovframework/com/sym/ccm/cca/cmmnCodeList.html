@@ -99,14 +99,14 @@
         }).done(function(response) {
             let cmmnCodeList = response.cmmnCodeList;
             let pagination = response.pagination;
-            let lineNumber = response.lineNumber;
+            let paginationInfo = response.paginationInfo;
 
             let html = '';
             if(cmmnCodeList.length === 0){
                 html = `<tr><td class="text-center" colspan="5">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 cmmnCodeList.forEach(function(cmmnCode, index) {
-                    let number = lineNumber + (index + 1);
+                    let number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+escapeHtml(cmmnCode.clCodeNm)+'</td>';
@@ -120,6 +120,9 @@
             }
             $('#cmmnCode-list-container').html(html);
             $('#pagination-container').html(pagination);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 

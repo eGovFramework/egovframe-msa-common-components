@@ -65,7 +65,12 @@
             },
             body: JSON.stringify(param)
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
         .then(response => {
             const qestnrInfo = response.qestnrInfo;
             document.getElementById('qustnrSj').textContent = qestnrInfo.qustnrSj;
@@ -132,6 +137,11 @@
                 });
             }
             document.getElementById('qustnrResult').innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Failed to load survey statistics:', error);
+            document.getElementById('qustnrResult').innerHTML =
+                '<p class="text-center">[(#{fail.request.msg})]</p>';
         });
     }
 </script>

@@ -99,14 +99,14 @@
         .then(response => {
             const roleInfoList = response.roleInfoList;
             const pagination = response.pagination;
-            const lineNumber = response.lineNumber;
+            const paginationInfo = response.paginationInfo;
 
             let html = '';
             if(roleInfoList.length === 0){
                 html = `<tr><td class="text-center" colspan="7">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 roleInfoList.forEach(function (roleInfo, index) {
-                    let number = lineNumber + (index + 1);
+                    let number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center"><a class="krds-btn text small" style="cursor: pointer" tabindex="0" onclick="roleInfoDetail(\''+escapeHtml(roleInfo.roleCode)+'\')">'+

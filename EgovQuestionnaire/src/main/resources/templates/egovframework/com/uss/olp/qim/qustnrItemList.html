@@ -101,14 +101,14 @@
         .then(response => {
             const qustnrItemList = response.qustnrItemList;
             const pagination = response.pagination;
-            const lineNumber = response.lineNumber;
+            const paginationInfo = response.paginationInfo;
 
             let html = '';
             if(qustnrItemList.length === 0){
                 html = `<tr><td class="text-center" colspan="6">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 qustnrItemList.forEach(function(qustnrItem, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+qustnrItem.qustnrSj+'</td>';

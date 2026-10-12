@@ -10,4 +10,6 @@ public interface EgovAuthorRoleService {
 
     boolean delete(AuthorRoleRelatedVO authorRoleRelatedVO);
 
+    boolean updateRoleInfoList(String[] authorCodes, String[] roleCodes, String[] regYns, AuthorRoleRelatedVO authorRoleRelatedVO);
+
 }

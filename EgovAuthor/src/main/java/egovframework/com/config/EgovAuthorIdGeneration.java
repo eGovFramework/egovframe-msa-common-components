@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 public class EgovAuthorIdGeneration {
 
     @Bean(name="groupIdStrategy")
-    public EgovIdGnrStrategyImpl groupIdStrategy() {
+    EgovIdGnrStrategyImpl groupIdStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("GROUP_");
         egovIdGnrStrategyImpl.setCipers(14);
@@ -20,7 +20,7 @@ public class EgovAuthorIdGeneration {
     }
 
     @Bean(name="egovIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(groupIdStrategy());
@@ -31,7 +31,7 @@ public class EgovAuthorIdGeneration {
     }
 
     @Bean(name="roleIdStrategy")
-    public EgovIdGnrStrategyImpl roleIdStrategy() {
+    EgovIdGnrStrategyImpl roleIdStrategy() {
         EgovIdGnrStrategyImpl egovIdGnrStrategyImpl = new EgovIdGnrStrategyImpl();
         egovIdGnrStrategyImpl.setPrefix("");
         egovIdGnrStrategyImpl.setCipers(6);
@@ -40,7 +40,7 @@ public class EgovAuthorIdGeneration {
     }
 
     @Bean(name="egovRoleIdGnrService", destroyMethod="destroy")
-    public EgovTableIdGnrServiceImpl egovRoleIdGnrService(DataSource dataSource) {
+    EgovTableIdGnrServiceImpl egovRoleIdGnrService(DataSource dataSource) {
         EgovTableIdGnrServiceImpl egovTableIdGnrServiceImpl = new EgovTableIdGnrServiceImpl();
         egovTableIdGnrServiceImpl.setDataSource(dataSource);
         egovTableIdGnrServiceImpl.setStrategy(roleIdStrategy());

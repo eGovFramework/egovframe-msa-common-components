@@ -102,14 +102,14 @@
         .then(data => {
             const qustnrRespondInfoList = data.qustnrRespondInfoList;
             const pagination = data.pagination;
-            const lineNumber = data.lineNumber;
+            const paginationInfo = data.paginationInfo;
 
             let html = '';
             if(qustnrRespondInfoList.length === 0){
                 html = `<tr><td class="text-center" colspan="5">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 qustnrRespondInfoList.forEach(function(qustnrRespondInfo, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+escapeHtml(qustnrRespondInfo.qustnrSj)+'</td>';

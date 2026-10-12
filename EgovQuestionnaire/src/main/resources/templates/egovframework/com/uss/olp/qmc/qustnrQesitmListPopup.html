@@ -64,14 +64,14 @@
         .then(data => {
             const qustnrQesitmList = data.qustnrQesitmList;
             const pagination = data.pagination;
-            const lineNumber = data.lineNumber;
+            const paginationInfo = data.paginationInfo;
 
             let html = '';
             if(qustnrQesitmList.length === 0){
                 html = `<tr><td colspan="6">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 qustnrQesitmList.forEach(function (qustnrQesitm, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     const qestnTyCodeName =
                         qustnrQesitm.qestnTyCode === '1'
                             ? '[(#{comUssOlpQmc.comUssOlpQqm.regist.objectiveQuest})]'

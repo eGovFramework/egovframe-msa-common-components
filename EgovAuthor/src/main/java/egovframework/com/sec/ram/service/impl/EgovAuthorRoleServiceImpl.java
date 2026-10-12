@@ -114,4 +114,22 @@ public class EgovAuthorRoleServiceImpl extends EgovAbstractServiceImpl implement
         return !repository.existsById(authorRoleRelated.getAuthorRoleRelatedId());
     }
 
+    @Transactional
+    @Override
+    public boolean updateRoleInfoList(String[] authorCodes, String[] roleCodes, String[] regYns, AuthorRoleRelatedVO authorRoleRelatedVO) {
+        boolean result = false;
+        for (int i = 0; i < authorCodes.length; i++) {
+            authorRoleRelatedVO.setAuthorCode(authorCodes[i]);
+            authorRoleRelatedVO.setRoleCode(roleCodes[i]);
+
+            if ("Y".equals(regYns[i])) {
+                result = this.delete(authorRoleRelatedVO);
+                this.insert(authorRoleRelatedVO);
+            } else {
+                result = this.delete(authorRoleRelatedVO);
+            }
+        }
+        return result;
+    }
+
 }

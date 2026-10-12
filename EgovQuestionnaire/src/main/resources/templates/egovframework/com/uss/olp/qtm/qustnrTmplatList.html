@@ -106,7 +106,7 @@
         .then(data => {
             const qustnrTmplatList = data.qustnrTmplatList;
             const pagination = data.pagination;
-            const lineNumber = data.lineNumber;
+            const paginationInfo = data.paginationInfo;
 
             let html = '';
             let imageInfo = '[(#{comUssOlpQtm.title.image})]';
@@ -114,7 +114,7 @@
                 html = `<tr><td class="text-center" colspan="6">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 qustnrTmplatList.forEach(function(qustnrTmplat, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+escapeHtml(qustnrTmplat.qustnrTmplatTy)+'</td>';

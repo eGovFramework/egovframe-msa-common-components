@@ -54,7 +54,7 @@ public class EgovSearchClient {
 
         @Bean
         @Lazy
-        public OpenSearchClient openSearchClient() throws Exception {
+        OpenSearchClient openSearchClient() throws Exception {
                 log.info("=== OpenSearch Client Bean 초기화 시작 ===");
 
                 // 1. HttpHost 생성

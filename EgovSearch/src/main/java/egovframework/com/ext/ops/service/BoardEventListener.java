@@ -27,7 +27,7 @@ public class BoardEventListener {
     private final EgovOpenSearchService egovOpenSearchService;
     
     @Bean
-    public Consumer<BoardEvent> searchConsumer() {
+    Consumer<BoardEvent> searchConsumer() {
         return this::handleBoardEvent;
     }
     

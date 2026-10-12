@@ -40,6 +40,9 @@ public class EgovBbsSearchAPIController {
 	
 	@PostMapping("/textSearchResult")
 	public ResponseEntity<?> selectBbsTextSearchList(@ModelAttribute BoardVO boardVO) throws Exception {
+		if (boardVO.getPageIndex() < 1) {
+			return ResponseEntity.badRequest().body("pageIndex must be greater than zero");
+		}
 		PaginationInfo paginationInfo = new PaginationInfo();
 		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
 		paginationInfo.setRecordCountPerPage(textSearchPageSize);
@@ -64,6 +67,9 @@ public class EgovBbsSearchAPIController {
 
 	@PostMapping("/vectorSearchResult")
 	public ResponseEntity<?> selectBbsVectorSearchList(@ModelAttribute BoardVO boardVO) throws Exception {
+		if (boardVO.getPageIndex() < 1) {
+			return ResponseEntity.badRequest().body("pageIndex must be greater than zero");
+		}
 		PaginationInfo paginationInfo = new PaginationInfo();
 		paginationInfo.setCurrentPageNo(boardVO.getPageIndex());
 		paginationInfo.setRecordCountPerPage(vectorSearchPageSize);

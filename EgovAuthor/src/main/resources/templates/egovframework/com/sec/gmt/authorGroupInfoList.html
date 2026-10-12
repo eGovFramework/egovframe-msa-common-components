@@ -96,14 +96,14 @@
         .then(response => {
             const authorGroupInfoList = response.authorGroupInfoList;
             const pagination = response.pagination;
-            const lineNumber = response.lineNumber;
+            const paginationInfo = response.paginationInfo;
 
             let html = '';
             if(authorGroupInfoList.length === 0){
                 html = `<tr><td class="text-center" colspan="5">[(#{info.nodata.msg})]</td></tr>`
             }else{
                 authorGroupInfoList.forEach(function(authorGroupInfo, index) {
-                    const number = lineNumber + (index + 1);
+                    const number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">'+number+'</td>';
                     html += '<td class="text-center">'+

@@ -76,17 +76,7 @@ public class EgovAuthorGroupAPIController {
         String[] strAuthorCodes = authorCode.split(";");
         String[] strRegYns = regYns.split(";");
 
-        for (int i = 0; i < strUserIds.length; i++) {
-            authorGroupVO.setScrtyDtrmnTrgetId(strUserIds[i]);
-            authorGroupVO.setMberTyCode(strMberTyCodes[i]);
-            authorGroupVO.setAuthorCode(strAuthorCodes[i]);
-
-            if ("N".equals(strRegYns[i])) {
-                service.insert(authorGroupVO);
-            } else {
-                service.update(authorGroupVO);
-            }
-        }
+        service.insertOrUpdateList(strUserIds, strMberTyCodes, strAuthorCodes, strRegYns, authorGroupVO);
 
         return ResponseEntity.ok().build();
     }
@@ -95,10 +85,7 @@ public class EgovAuthorGroupAPIController {
     public ResponseEntity<?> authorGroupDelete(@RequestParam String userIds, @ModelAttribute AuthorGroupVO authorGroupVO, HttpServletRequest request) {
         Map<String, String> userInfo = extracted(request);
         String[] strUserIds = userIds.split(";");
-        for (String strUserId : strUserIds) {
-            authorGroupVO.setScrtyDtrmnTrgetId(strUserId);
-            service.delete(authorGroupVO, userInfo);
-        }
+        service.deleteList(strUserIds, authorGroupVO, userInfo);
 
         return ResponseEntity.ok().build();
     }

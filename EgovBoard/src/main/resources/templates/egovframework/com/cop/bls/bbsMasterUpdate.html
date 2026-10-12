@@ -12,7 +12,7 @@
     <nav class="krds-breadcrumb-wrap" aria-label="브레드크럼" id="breadcrumb">
         <ol class="breadcrumb">
             <li class="home"><a href="/" class="txt">홈</a></li>
-            <li>협업</li>
+            <li th:text="#{comCmm.cop.title}">협업</li>
         </ol>
     </nav>
 
@@ -34,7 +34,7 @@
                     <div class="form-conts">
                         <input type="text" id="bbsNm" name="bbsNm" class="krds-input" maxlength="120"
                                th:field="*{bbsNm}"
-                               th:placeholder="#{comCopBbs.boardMasterVO.regist.bbsNm}+' '+#{input.input}">>
+                               th:placeholder="#{comCopBbs.boardMasterVO.regist.bbsNm}+' '+#{input.input}">
                     </div>
                     <p class="form-hint-invalid" id="bbsNmError" style="display:none"></p>
                 </div>
@@ -296,6 +296,9 @@
                     }
                 }
             }
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 
@@ -321,6 +324,9 @@
                     alert('[(#{success.common.update})]');
                     bbsMasterList();
                 }
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error("Error details:", textStatus, errorThrown);
+                alert('[(#{fail.common.msg})]');
             });
         }
     }

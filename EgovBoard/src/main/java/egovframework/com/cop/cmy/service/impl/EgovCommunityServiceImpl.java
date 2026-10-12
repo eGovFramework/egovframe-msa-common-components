@@ -207,12 +207,27 @@ public class EgovCommunityServiceImpl extends EgovAbstractServiceImpl implements
     @Transactional
     @Override
     public CommunityVO update(CommunityVO communityVO, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
+        }
+
         return repository.findById(communityVO.getCmmntyId())
                 .map(result -> {
+                    CmmntyUserId memberId = new CmmntyUserId();
+                    memberId.setCmmntyId(communityVO.getCmmntyId());
+                    memberId.setEmplyrId(uniqId);
+                    boolean isManager = userRepository.findById(memberId)
+                            .filter(member -> "Y".equals(member.getUseAt()))
+                            .filter(member -> "Y".equals(member.getMngrAt()))
+                            .isPresent();
+                    if (!Objects.equals(uniqId, result.getFrstRegisterId()) && !isManager) {
+                        throw new IllegalStateException("수정 권한이 없습니다.");
+                    }
                     result.setCmmntyNm(communityVO.getCmmntyNm());
                     result.setCmmntyIntrcn(communityVO.getCmmntyIntrcn());
                     result.setLastUpdtPnttm(LocalDateTime.now());
-                    result.setLastUpdusrId(userInfo.get("uniqId"));
+                    result.setLastUpdusrId(uniqId);
                     return repository.save(result);
                 })
                 .map(EgovCommunityUtility::cmmntyEntityToVO).orElse(null);

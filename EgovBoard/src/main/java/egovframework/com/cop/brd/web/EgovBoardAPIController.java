@@ -187,14 +187,7 @@ public class EgovBoardAPIController {
     }
 
     @PostMapping(value = "/deleteBoard")
-    public ResponseEntity<?> deleteBoard(@RequestBody BbsVO bbsVO, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
+    public ResponseEntity<?> deleteBoard(@RequestBody BbsVO bbsVO, HttpServletRequest request) {
 
         Map<String, String> userInfo = gatewayUserContextResolver.resolve(request);
         try {

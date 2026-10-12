@@ -57,7 +57,7 @@ public class EgovRoleInfoAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("roleInfoList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (roleInfoVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

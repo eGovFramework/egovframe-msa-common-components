@@ -57,7 +57,7 @@ public class EgovCommunityAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("communityList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (communityVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

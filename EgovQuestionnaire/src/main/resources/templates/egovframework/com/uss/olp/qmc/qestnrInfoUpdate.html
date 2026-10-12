@@ -110,7 +110,7 @@
             </div>
             <div class="page-btn-wrap">
                 <button type="button" class="krds-btn medium tertiary" th:text="#{button.list}" th:onclick="qestnrInfoList()"></button>
-                <button type="button" class="krds-btn medium" th:text="#{button.create}" th:onclick="qestnrInfoUpdate()"></button>
+                <button type="button" class="krds-btn medium" th:text="#{button.update}" th:onclick="qestnrInfoUpdate()"></button>
             </div>
         </div>
     </form>
@@ -177,8 +177,8 @@
                 });
                 document.getElementById('qustnrTrget').innerHTML = cmmnDetailCodeHtml;
 
-                document.getElementById('startDate').value = response.result.qustnrBgnde;
-                document.getElementById('endDate').value = response.result.qustnrEndde;
+                document.getElementById('startDate').value = response.result.qustnrBgnde.replaceAll('/', '-');
+                document.getElementById('endDate').value = response.result.qustnrEndde.replaceAll('/', '-');
 
                 let qustnrTmplatId = response.result.qustnrTmplatId;
                 let qustnrTmplatList = response.qustnrTmplatList;

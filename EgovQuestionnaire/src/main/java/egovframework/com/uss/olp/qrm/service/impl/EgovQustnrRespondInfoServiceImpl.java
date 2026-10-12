@@ -55,8 +55,8 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
         QQustnrRespondInfo qustnrRespondInfo = QQustnrRespondInfo.qustnrRespondInfo;
         QUserMaster userMaster = QUserMaster.userMaster;
         QQestnrInfo qestnrInfo = QQestnrInfo.qestnrInfo;
-        QCmmnDetailCode sexCode = QCmmnDetailCode.cmmnDetailCode;
-        QCmmnDetailCode tyCode = QCmmnDetailCode.cmmnDetailCode;
+        QCmmnDetailCode sexCode = new QCmmnDetailCode("sexCode");
+        QCmmnDetailCode tyCode = new QCmmnDetailCode("tyCode");
 
         BooleanBuilder where = new BooleanBuilder();
         if ("1".equals(searchCondition) && searchKeyword != null && !searchKeyword.isEmpty()) {
@@ -65,7 +65,7 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
             where.and(userMaster.userNm.contains(searchKeyword));
         }
 
-        List<Tuple> results = qustnrRespondInfoQuery()
+        List<Tuple> results = qustnrRespondInfoQuery(sexCode, tyCode)
                 .where(where)
                 .orderBy(qustnrRespondInfo.frstRegistPnttm.desc())
                 .offset(pageable.getOffset())
@@ -137,10 +137,10 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
         QQustnrRespondInfo qustnrRespondInfo = QQustnrRespondInfo.qustnrRespondInfo;
         QUserMaster userMaster = QUserMaster.userMaster;
         QQestnrInfo qestnrInfo = QQestnrInfo.qestnrInfo;
-        QCmmnDetailCode sexCode = QCmmnDetailCode.cmmnDetailCode;
-        QCmmnDetailCode tyCode = QCmmnDetailCode.cmmnDetailCode;
+        QCmmnDetailCode sexCode = new QCmmnDetailCode("sexCode");
+        QCmmnDetailCode tyCode = new QCmmnDetailCode("tyCode");
 
-        Tuple tuple = qustnrRespondInfoQuery()
+        Tuple tuple = qustnrRespondInfoQuery(sexCode, tyCode)
                 .where(qustnrRespondInfo.qustnrRespondInfoId.qustnrRespondId.eq(qustnrRespondInfoVO.getQustnrRespondId()))
                 .fetchOne();
 
@@ -249,12 +249,10 @@ public class EgovQustnrRespondInfoServiceImpl extends EgovAbstractServiceImpl im
         }
     }
 
-    private JPAQuery<Tuple> qustnrRespondInfoQuery(){
+    private JPAQuery<Tuple> qustnrRespondInfoQuery(QCmmnDetailCode sexCode, QCmmnDetailCode tyCode){
         QQustnrRespondInfo qustnrRespondInfo = QQustnrRespondInfo.qustnrRespondInfo;
         QUserMaster userMaster = QUserMaster.userMaster;
         QQestnrInfo qestnrInfo = QQestnrInfo.qestnrInfo;
-        QCmmnDetailCode sexCode = QCmmnDetailCode.cmmnDetailCode;
-        QCmmnDetailCode tyCode = QCmmnDetailCode.cmmnDetailCode;
 
         return queryFactory
                 .select(qustnrRespondInfo,userMaster,qestnrInfo,sexCode,tyCode)

@@ -57,7 +57,7 @@ public class EgovBbsMasterAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("bbsMasterList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (bbsMasterVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

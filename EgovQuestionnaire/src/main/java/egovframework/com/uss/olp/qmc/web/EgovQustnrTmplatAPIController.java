@@ -40,7 +40,7 @@ public class EgovQustnrTmplatAPIController {
     public void qustnrTmplatImage(HttpServletResponse response, @RequestParam("qustnrTmplatId") String qustnrTmplatId, HttpServletRequest request) throws IOException {
         Map<String, String> userInfo = extracted(request);
         byte[] image = service.getImage(qustnrTmplatId,userInfo);
-        // 2026.07.13 KISA º¸¾ÈÃë¾àÁ¡ Á¶Ä¡: ½ÇÁ¦ ÀÌ¹ÌÁö ÄÜÅÙÃ÷ À¯ÇüÀ¸·Î Content-Type ÁöÁ¤ ¹× MIME ½º´ÏÇÎ ¹æÁö Çì´õ Ãß°¡
+        // 2026.07.13 KISA ë³´ì•ˆì·¨ì•½ì  ì¡°ì¹˜: ì‹¤ì œ ì´ë¯¸ì§€ ì½˜í…ì¸  ìœ í˜•ìœ¼ë¡œ Content-Type ì§€ì • ë° MIME ìŠ¤ë‹ˆí•‘ ë°©ì§€ í—¤ë” ì¶”ê°€
         response.setContentType(detectImageContentType(image));
         response.setHeader("X-Content-Type-Options", "nosniff");
         response.setContentLength(image.length);

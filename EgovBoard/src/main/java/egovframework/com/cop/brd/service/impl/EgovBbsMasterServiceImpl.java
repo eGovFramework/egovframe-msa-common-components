@@ -90,11 +90,9 @@ public class EgovBbsMasterServiceImpl extends EgovAbstractServiceImpl implements
 
     @Override
     public BbsMasterOptnVO selectBBSMasterOptn(String bbsId) {
-        if (optnRepository.findById(bbsId).isPresent()) {
-            return EgovBoardUtility.bbsmasteroptnEntityToVO(optnRepository.findById(bbsId).get());
-        } else {
-            return null;
-        }
+        return optnRepository.findById(bbsId)
+                .map(EgovBoardUtility::bbsmasteroptnEntityToVO)
+                .orElse(null);
     }
 
     @Override

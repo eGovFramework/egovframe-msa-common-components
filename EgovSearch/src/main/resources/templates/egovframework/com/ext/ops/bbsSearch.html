@@ -22,6 +22,7 @@
         </div>
         <form id="searchForm" name="searchForm" class="search-form">
             <input type="hidden" id="pageIndex" name="pageIndex" value="1"/>
+            <input type="hidden" id="searchWrd" name="searchWrd"/>
             <div class="form-group search_body">
                 <div class="search-wrap">
                     <div class="krds-tab-area layer">
@@ -47,7 +48,7 @@
                                         </select>
                                     </div>
                                     <div class="form-conts btn-ico-wrap searchKeyword">
-                                        <input type="text" id="textSearchKeyword" name="searchWrd" class="krds-input medium" th:placeholder="#{title.search} + #{search.placeholder}">
+                                        <input type="text" id="textSearchKeyword" class="krds-input medium" th:placeholder="#{title.search} + #{search.placeholder}">
                                         <button type="button" class="krds-btn medium icon" onclick="textSearch()">
                                             <span class="sr-only" th:text="#{button.search}"></span>
                                             <i class="svg-icon ico-sch"></i>
@@ -58,7 +59,7 @@
                             <section id="panel_login_02" aria-labelledby="tab_login_02" class="tab-conts" data-quick-nav="false">
                                 <h3 class="sr-only" th:text="#{tab.title}"></h3>
                                 <div class="form-conts btn-ico-wrap searchKeyword">
-                                    <input type="text" id="vectorSearchKeyword" name="searchWrd" class="krds-input medium" th:placeholder="#{title.search} + #{search.placeholder}">
+                                    <input type="text" id="vectorSearchKeyword" class="krds-input medium" th:placeholder="#{title.search} + #{search.placeholder}">
                                     <button type="button" class="krds-btn medium icon" onclick="vectorSearch()">
                                         <span class="sr-only" th:text="#{button.search}"></span>
                                         <i class="svg-icon ico-sch"></i>
@@ -99,6 +100,7 @@
                 alert('[(#{title.search})][(#{search.placeholder})]');
                 return false;
             }
+            document.getElementById("searchWrd").value = document.getElementById("textSearchKeyword").value;
             form.action = "/ext/ops/textSearchResultView";
             form.method = "post";
             form.submit();
@@ -108,6 +110,7 @@
                 alert('[(#{title.search})][(#{search.placeholder})]');
                 return false;
             }
+            document.getElementById("searchWrd").value = document.getElementById("vectorSearchKeyword").value;
             form.action = "/ext/ops/vectorSearchResultView";
             form.method = "post";
             form.submit();

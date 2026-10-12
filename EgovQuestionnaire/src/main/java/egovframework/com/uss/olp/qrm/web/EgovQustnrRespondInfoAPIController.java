@@ -58,7 +58,7 @@ public class EgovQustnrRespondInfoAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("qustnrRespondInfoList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (qustnrRespondInfoVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }

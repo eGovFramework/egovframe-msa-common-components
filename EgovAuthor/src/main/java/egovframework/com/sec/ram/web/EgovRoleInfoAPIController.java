@@ -56,7 +56,7 @@ public class EgovRoleInfoAPIController {
         Map<String, Object> response = new HashMap<>();
         response.put("roleInfoList", list.getContent());
         response.put("pagination", pagination);
-        response.put("lineNumber", (authorRoleRelatedVO.getPageIndex()-1)*pageSize);
+        response.put("paginationInfo", paginationInfo);
 
         return ResponseEntity.ok(response);
     }
@@ -79,18 +79,7 @@ public class EgovRoleInfoAPIController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
-        boolean result = false;
-        for (int i = 0; i < strAuthorCodes.length; i++) {
-            authorRoleRelatedVO.setAuthorCode(strAuthorCodes[i]);
-            authorRoleRelatedVO.setRoleCode(strRoleCodes[i]);
-
-            if ("Y".equals(strRegYns[i])) {
-                result = service.delete(authorRoleRelatedVO);
-                service.insert(authorRoleRelatedVO);
-            } else {
-                result = service.delete(authorRoleRelatedVO);
-            }
-        }
+        boolean result = service.updateRoleInfoList(strAuthorCodes, strRoleCodes, strRegYns, authorRoleRelatedVO);
 
         Map<String, Object> response = new HashMap<>();
         if (!ObjectUtils.isEmpty(result)) {

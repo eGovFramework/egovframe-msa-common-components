@@ -40,7 +40,7 @@ public class JPAConfig {
      */
     @Bean
     @Primary
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         Map<String, Object> properties = new HashMap<>();
         properties.put("hibernate.hbm2ddl.auto", ddlAuto);
         properties.put("hibernate.show_sql", showSql);
@@ -65,7 +65,7 @@ public class JPAConfig {
      */
     @Bean
     @Primary
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
@@ -74,7 +74,7 @@ public class JPAConfig {
      * QueryDSL 사용을 위한 팩토리 제공
      */
     @Bean
-    public JPAQueryFactory jpaQueryFactory(EntityManager entityManager){
+    JPAQueryFactory jpaQueryFactory(EntityManager entityManager){
         return new JPAQueryFactory(entityManager);
     }
 

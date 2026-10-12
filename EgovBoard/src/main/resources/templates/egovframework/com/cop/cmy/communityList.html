@@ -93,12 +93,12 @@
         }).done(function(response) {
             let communityList = response.communityList;
             let pagination = response.pagination;
-            let lineNumber = response.lineNumber;
+            let paginationInfo = response.paginationInfo;
 
             let html = '';
             if (communityList.length > 0) {
                 communityList.forEach(function (community, index) {
-                    let number = lineNumber + (index + 1);
+                    let number = paginationInfo.totalRecordCount - paginationInfo.firstRecordIndex - index;
                     html += '<tr>';
                     html += '<td class="text-center">' + number + '</td>';
                     html += '<td class="text-center">' +
@@ -116,6 +116,9 @@
 
             $('#community-list-container').html(html);
             $('#pagination-container').html(pagination);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error("Error details:", textStatus, errorThrown);
+            alert('[(#{fail.common.msg})]');
         });
     }
 

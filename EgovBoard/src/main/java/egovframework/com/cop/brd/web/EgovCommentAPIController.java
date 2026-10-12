@@ -93,15 +93,7 @@ public class EgovCommentAPIController {
     }
 
     @PostMapping("/deleteComment")
-    public ResponseEntity<?> deleteComment(@Valid @RequestBody CommentVO commentVO, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
-
+    public ResponseEntity<?> deleteComment(@RequestBody CommentVO commentVO, HttpServletRequest request) {
         Map<String, String> userInfo = extracted(request);
         try {
             articleCommentService.deleteArticleComment(commentVO, userInfo);
@@ -160,26 +152,17 @@ public class EgovCommentAPIController {
                 errors.put(error.getField(), error.getDefaultMessage());
             }
             return ResponseEntity.badRequest().body(errors);
-        } else {
-            if (stsfdgVO.getStsfdg() >= 0) {
-                Map<String, String> userInfo = extracted(request);
-                bbsStsfdgService.insertStsfdg(stsfdgVO, userInfo);
-            }
         }
+
+        Map<String, String> userInfo = extracted(request);
+        bbsStsfdgService.insertStsfdg(stsfdgVO, userInfo);
 
         return ResponseEntity.ok().body("등록이 완료되었습니다.");
     }
 
     @Transactional
     @PostMapping("/deleteStsfdg")
-    public ResponseEntity<?> deleteStsfdg(@RequestBody StsfdgVO stsfdgVO, BindingResult bindingResult, HttpServletRequest request) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : bindingResult.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        }
+    public ResponseEntity<?> deleteStsfdg(@RequestBody StsfdgVO stsfdgVO, HttpServletRequest request) {
         String stsfdgNo = stsfdgVO.getStsfdgNo() != null ? stsfdgVO.getStsfdgNo() : "";
         if (stsfdgNo.isEmpty()) {
             return ResponseEntity.badRequest().body("stsfdgNo is required");
@@ -192,6 +175,9 @@ public class EgovCommentAPIController {
             String msg = e.getMessage();
             if ("인증 정보가 없습니다.".equals(msg)) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(msg);
+            }
+            if ("만족도를 찾을 수 없습니다.".equals(msg)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(msg);
             }
             if (msg != null && msg.contains("권한")) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(msg);
