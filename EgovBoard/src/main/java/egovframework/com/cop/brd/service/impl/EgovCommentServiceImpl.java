@@ -1,165 +1,95 @@
 package egovframework.com.cop.brd.service.impl;
 
-import egovframework.com.cop.brd.entity.File;
-import egovframework.com.cop.brd.entity.FileDetail;
-import egovframework.com.cop.brd.entity.FileDetailId;
-import egovframework.com.cop.brd.repository.EgovFileDetailRepository;
-import egovframework.com.cop.brd.repository.EgovFileRepository;
-import egovframework.com.cop.brd.service.EgovFileService;
-import egovframework.com.cop.brd.service.FileVO;
+import egovframework.com.cop.brd.entity.Comment;
+import egovframework.com.cop.brd.entity.CommentId;
+import egovframework.com.cop.brd.repository.EgovCommentRepository;
+import egovframework.com.cop.brd.service.CommentVO;
+import egovframework.com.cop.brd.service.EgovCommentService;
 import egovframework.com.cop.brd.util.EgovBoardUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
 import org.egovframe.rte.fdl.cmmn.exception.FdlException;
 import org.egovframe.rte.fdl.idgnr.EgovIdGnrService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-@Service("brdEgovFileService")
+@Service("brdEgovCommentService")
 @Slf4j
-public class EgovFileServiceImpl extends EgovAbstractServiceImpl implements EgovFileService {
+public class EgovCommentServiceImpl extends EgovAbstractServiceImpl implements EgovCommentService {
 
-    private final EgovFileRepository fileRepository;
-    private final EgovFileDetailRepository fileDetailRepository;
-    private final EgovIdGnrService idGnrService;
+    private final EgovCommentRepository egovCommentRepository;
+    private final EgovIdGnrService idgenServiceAnswerNo;
 
-    public EgovFileServiceImpl(
-            EgovFileRepository fileRepository,
-            EgovFileDetailRepository fileDetailRepository,
-            @Qualifier("egovFileIdGnrService") EgovIdGnrService idGnrService
+    public EgovCommentServiceImpl(
+            EgovCommentRepository egovCommentRepository,
+            @Qualifier("egovAnswerNoGnrService") EgovIdGnrService idgenServiceAnswerNo
     ) {
-        this.fileRepository = fileRepository;
-        this.fileDetailRepository = fileDetailRepository;
-        this.idGnrService = idGnrService;
+        this.egovCommentRepository = egovCommentRepository;
+        this.idgenServiceAnswerNo = idgenServiceAnswerNo;
     }
 
     @Override
-    public List<FileVO> selectFileInfs(String atchFileId) {
-        return fileDetailRepository.findAllByFileDetailId_AtchFileId(atchFileId)
-                .stream()
-                .map(EgovBoardUtility::fileDeatailEntityToVO)
-                .collect(Collectors.toList());
+    public Page<CommentVO> selectArticleCommentList(CommentVO commentVO) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "frstRegistPnttm");
+        Pageable pageable = PageRequest.of(commentVO.getFirstIndex(), commentVO.getRecordCountPerPage(), sort);
+        return egovCommentRepository
+                .findAllByCommentId_BbsIdAndCommentId_NttIdAndUseAt(commentVO.getBbsId(), commentVO.getNttId(), "Y", pageable)
+                .map(EgovBoardUtility::commentEntityToVO);
     }
 
     @Override
-    public String insertFileInf(FileVO fvo) {
-        int fileCount = fileDetailRepository.findAllByFileDetailId_AtchFileId(fvo.getAtchFileId()).size();
+    public void insertArticleComment(CommentVO commentVO, Map<String, String> userInfo) throws FdlException {
+        log.debug("댓글 >> " + commentVO.getAnswer());
+        commentVO.setAnswerNo(idgenServiceAnswerNo.getNextLongId());
+        commentVO.setUseAt("Y");
+        commentVO.setWrterId(userInfo.get("uniqId"));
+        commentVO.setWrterNm(userInfo.get("userName"));
+        commentVO.setFrstRegisterId(userInfo.get("uniqId"));
+        commentVO.setFrstRegistPnttm(LocalDateTime.now());
 
-        if (fileCount > 0) {
-            fvo.setFileSn(String.valueOf(fileCount));
-        }
-
-        File file = new File();
-        FileDetail filedetail = new FileDetail();
-        BeanUtils.copyProperties(fvo, file);
-        BeanUtils.copyProperties(fvo, filedetail);
-
-        file.setAtchFileId(fvo.getAtchFileId());
-        file.setUseAt("Y");
-        file.setCreatDt(LocalDateTime.now());
-
-        FileDetailId filedetailId = new FileDetailId();
-        filedetailId.setAtchFileId(fvo.getAtchFileId());
-        if (fvo.getFileSn().isEmpty()) {
-            filedetailId.setFileSn("0");
-        } else {
-            filedetailId.setFileSn(fvo.getFileSn());
-        }
-        filedetail.setFileDetailId(filedetailId);
-
-        file.setCreatDt(LocalDateTime.now());
-
-        fileRepository.save(file);
-        fileDetailRepository.save(filedetail);
-
-        return fvo.getAtchFileId();
-    }
-
-    @Transactional
-    @Override
-    public String insertFiles(List<FileVO> fileList) throws FdlException {
-        String attachFileId = idGnrService.getNextStringId();
-        for (int i = 0; i < fileList.size(); i++) {
-            if (fileList.get(i).getAtchFileId() != null) {
-                // 추가등록
-                attachFileId = fileList.get(i).getAtchFileId();
-                fileList.get(i).setAtchFileId(attachFileId);
-                fileList.get(i).setFileSn(String.valueOf(i));
-            } else {
-                // 신규등록
-                fileList.get(i).setAtchFileId(attachFileId);
-                fileList.get(i).setFileSn(String.valueOf(i));
-            }
-            attachFileId = insertFileInf(fileList.get(i));
-        }
-        return attachFileId;
+        egovCommentRepository.save(EgovBoardUtility.commentVOToEntity(commentVO));
     }
 
     @Override
-    public void deleteFileInfs(FileVO fileVO) {
-        if (ObjectUtils.isEmpty(fileVO.getDeleteFileSn()) || ObjectUtils.isEmpty(fileVO.getFileSn())) {
-            return;
+    public void deleteArticleComment(CommentVO commentVO, Map<String, String> userInfo) {
+        String uniqId = userInfo != null ? userInfo.get("uniqId") : null;
+        if (ObjectUtils.isEmpty(uniqId)) {
+            throw new IllegalStateException("인증 정보가 없습니다.");
         }
 
-        for (String num : fileVO.getDeleteFileSn()) {
-            // 토큰으로 검증된 단일 fileSn과 일치하는 값만 삭제한다.
-            if (!fileVO.getFileSn().equals(num)) {
-                continue;
-            }
-            FileDetailId filedetailId = new FileDetailId();
-            filedetailId.setAtchFileId(fileVO.getAtchFileId());
-            filedetailId.setFileSn(num);
-            fileDetailRepository.deleteById(filedetailId);
+        CommentId commentId = new CommentId();
+        commentId.setBbsId(commentVO.getBbsId());
+        commentId.setNttId(commentVO.getNttId());
+        commentId.setAnswerNo(commentVO.getAnswerNo());
+
+        Optional<Comment> optionalComment = egovCommentRepository.findById(commentId);
+        if (!optionalComment.isPresent()) {
+            throw new IllegalStateException("댓글을 찾을 수 없습니다.");
         }
 
-        List<FileVO> flist = selectFileInfs(fileVO.getAtchFileId());
-        if (!flist.isEmpty()) {
-            for (int i = 0; i < flist.size(); i++) {
-                FileVO fvo = flist.get(i);
-                FileDetailId fileDetailId = new FileDetailId();
-                fileDetailId.setAtchFileId(fvo.getAtchFileId());
-                fileDetailId.setFileSn(fvo.getFileSn());
-                Optional<FileDetail> optionalFileDetail = fileDetailRepository.findById(fileDetailId);
-
-                if (optionalFileDetail.isPresent()) {
-                    FileDetail fileDetail = optionalFileDetail.get();
-
-                    // 기존 엔티티 삭제
-                    fileDetailRepository.delete(fileDetail);
-
-                    String fileSn = String.valueOf(i);
-
-                    // 새로운 엔티티 생성
-                    FileDetail newFileDetail = new FileDetail();
-                    BeanUtils.copyProperties(fvo, newFileDetail);
-
-                    FileDetailId newFileDetailId = new FileDetailId();
-                    newFileDetailId.setAtchFileId(fvo.getAtchFileId());
-                    newFileDetailId.setFileSn(fileSn);
-
-                    newFileDetail.setFileDetailId(newFileDetailId);
-
-                    // 저장
-                    fileDetailRepository.save(newFileDetail);
-                }
-            }
+        Comment comment = optionalComment.get();
+        String ownerId = comment.getFrstRegisterId();
+        if (ObjectUtils.isEmpty(ownerId)) {
+            ownerId = comment.getWrterId();
         }
+        if (ObjectUtils.isEmpty(ownerId) || !Objects.equals(uniqId, ownerId)) {
+            throw new IllegalStateException("삭제 권한이 없습니다.");
+        }
+
+        comment.setUseAt("N");
+        comment.setLastUpdusrId(uniqId);
+        comment.setLastUpdtPnttm(LocalDateTime.now());
+        egovCommentRepository.save(comment);
     }
 
-    @Override
-    public FileVO detailFileInf(FileVO fileVO) {
-        FileDetailId fileDetailId = new FileDetailId();
-        fileDetailId.setAtchFileId(fileVO.getAtchFileId());
-        fileDetailId.setFileSn(fileVO.getFileSn());
-        fileVO = EgovBoardUtility.fileDeatailEntityToVO(fileDetailRepository.findById(fileDetailId).get());
-        return fileVO;
-    }
 }

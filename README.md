@@ -33,7 +33,6 @@
     ├ EgovBoard
     ├ EgovCmmnCode
     ├ EgovLogin
-    ├ EgovMobileId
     ├ EgovQuestionnaire
     ├ EgovSearch-Config
     ├ EgovSearch
@@ -51,7 +50,6 @@
   - 권한그룹관리
   - 그룹관리
   - 롤관리
-  - `EgovMobileId` : 모바일신분증(모바일운전면허증, 국가보훈등록증, 재외국민신원확인증)
 - `EgovBoard` : 협업 (7종)
   - 블로그관리
   - 게시판관리
