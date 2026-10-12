@@ -16,7 +16,6 @@
 		<module>EgovLogin</module>
 		<module>EgovLoginPolicy</module>
 		<module>EgovMain</module>
-		<module>EgovMobileId</module>
 		<module>EgovQuestionnaire</module>
 		<module>EgovSearch</module>
 		<module>EurekaServer</module>

@@ -39,8 +39,7 @@
     ├ EgovBoard        … 게시판·협업 (RabbitMQ: 검색 연동 시)
     ├ EgovCmmnCode     … 공통코드
     ├ EgovQuestionnaire … 설문
-    ├ EgovSearch       … OpenSearch·통합검색 (고정 포트 9992)
-    └ EgovMobileId     … 모바일 신분증 SP (고정 포트 9991, 외부 앱 직접 통신)
+    └ EgovSearch       … OpenSearch·통합검색 (고정 포트 9992)
 ```
 ※ OpenSearch·RabbitMQ용 `docker-compose`는 `EgovSearch/docker-compose/` 에 있음. 검색 설정 디렉터리 `EgovSearch-Config`는 별도 준비.
 
@@ -53,7 +52,6 @@
   - 권한그룹관리
   - 그룹관리
   - 롤관리
-  - `EgovMobileId` : 모바일신분증(모바일운전면허증, 국가보훈등록증, 재외국민신원확인증)
 - `EgovBoard` : 협업 (7종)
   - 블로그관리
   - 게시판관리

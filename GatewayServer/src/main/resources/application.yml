@@ -92,14 +92,6 @@ spring:
                 - RewritePath=/sec/rmt/(?<segment>.*), /sec/rmt/${segment}
                 - name: Auth
 
-            - id: EgovMobileId
-              uri: lb://EGOVMOBILEID
-              predicates:
-                - Path=/mip/**
-              filters:
-                - RewritePath=/mip/(?<segment>.*), /mip/${segment}
-                - name: Auth
-
             - id: EgovBlog
               uri: lb://EGOVBOARD
               predicates:
