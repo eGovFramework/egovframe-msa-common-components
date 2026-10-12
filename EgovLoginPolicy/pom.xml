@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>egovframework</groupId>
     <artifactId>EgovLoginPolicy</artifactId>
-    <version>5.0.3</version>
+    <version>5.0.4</version>
     <name>EgovLoginPolicy</name>
     <url>https://www.egovframe.go.kr</url>
 
