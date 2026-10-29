@@ -103,5 +103,6 @@
 ## 유의사항
 
 - 본 모듈 `pom.xml` 기준 **Java 17**.
+- `EgovQuestionnaire`는 중복 의존성 선언 없이 Maven 3.10.0의 POM 모델 검증을 통과합니다.
 
 ## 참조
