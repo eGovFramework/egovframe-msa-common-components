@@ -19,7 +19,7 @@ import egovframework.com.uss.olp.qmc.service.QustnrRspnsResultESStatsDTO;
 import egovframework.com.uss.olp.qmc.service.QustnrRspnsResultMCStatsDTO;
 import lombok.RequiredArgsConstructor;
 import org.egovframe.rte.fdl.cmmn.EgovAbstractServiceImpl;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-@Repository("qmcEgovQustnrRspnsResultService")
+@Service("qmcEgovQustnrRspnsResultService")
 @RequiredArgsConstructor
 public class EgovQustnrRspnsResultServiceImpl extends EgovAbstractServiceImpl implements EgovQustnrRspnsResultService {
 
